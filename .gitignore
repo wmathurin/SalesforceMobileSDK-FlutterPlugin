@@ -1,3 +1,5 @@
 .idea/
 .packages
 Podfile.lock
+mobile_sdk/
+package-lock.json
