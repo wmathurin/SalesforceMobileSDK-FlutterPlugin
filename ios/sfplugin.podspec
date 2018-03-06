@@ -3,19 +3,21 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'sfplugin'
-  s.version          = '0.0.1'
-  s.summary          = 'A new flutter plugin project.'
-  s.description      = <<-DESC
-A new flutter plugin project.
-                       DESC
-  s.homepage         = 'http://example.com'
-  s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.version          = '6.1.0'
+  s.summary          = 'Flutter plugin for the Salesforce Mobile SDK.'
+  s.description      = 'Flutter plugin for the Salesforce Mobile SDK.'
+  s.homepage         = "https://github.com/forcedotcom/SalesforceMobileSDK-FlutterPlugin"
+  s.license          = { :type => "Salesforce.com Mobile SDK License", :file => "../LICENSE.md" }
+  s.author           = { "Wolfgang Mathurin" => "wmathurin@salesforce.com" }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  
+  s.dependency 'SmartSync'
+  s.dependency 'SmartStore'
+  s.dependency 'SalesforceSDKCore'
+  s.dependency 'SalesforceAnalytics'
+
   s.ios.deployment_target = '8.0'
 end
 
