@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
@@ -33,7 +34,7 @@ class SalesforcePlugin {
           'fileParams': fileParams,
           'returnBinary': returnBinary}
     );
-    return response;
+    return response is Map ? response : JSON.decode(response);
   }
 
   static Future<Map> query(String soql) => sendRequest(path: "/${apiVersion}/query", payload: {'q': soql});
