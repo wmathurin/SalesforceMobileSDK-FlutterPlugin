@@ -1,55 +1,90 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:sfplugin/sfplugin.dart';
 
-void main() => runApp(new MyApp());
+class Contact {
+  final String name;
+  final String email;
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => new _MyAppState();
+  const Contact({this.name, this.email});
 }
 
-class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+class ContactListItem extends ListTile {
+
+  ContactListItem(Contact contact) :
+        super(
+          title : new Text(contact.name),
+          subtitle: new Text(contact.email),
+          leading: new CircleAvatar(
+              child: new Text(contact.name[0])
+          )
+      );
+
+}
+
+class ContactList extends StatelessWidget {
+
+  final List<Contact> contacts;
+
+  ContactList(this.contacts);
 
   @override
-  initState() {
-    super.initState();
-    initPlatformState();
+  Widget build(BuildContext context) {
+    return new ListView.builder(
+        padding: new EdgeInsets.symmetric(vertical: 8.0),
+        itemBuilder: (BuildContext context, int index) => new ContactListItem(contacts[index]),
+        itemCount: contacts.length
+    );
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await Sfplugin.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
+}
 
+class ContactsPageState extends State<ContactsPage> {
+  List<Contact> contacts;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() => this.contacts = []);
+    fetchData(); // asynchronous
+  }
+
+  void fetchData() async {
+    Map response = await SalesforcePlugin.query("SELECT Id, Name, Email FROM User LIMIT 50");
+    List<Contact> contacts = response["records"].map((record) => new Contact(name: record["Name"], email: record["Email"])).toList();
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
-    if (!mounted)
-      return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+    if (mounted) {
+      setState(() => this.contacts = contacts);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      home: new Scaffold(
+    return new Scaffold(
         appBar: new AppBar(
-          title: new Text('Plugin example app'),
+          title: new Text("Contacts"),
         ),
-        body: new Center(
-          child: new Text('Running on: $_platformVersion\n'),
-        ),
-      ),
+        body: new ContactList(this.contacts)
     );
   }
+}
+
+class ContactsPage extends StatefulWidget {
+
+  @override
+  ContactsPageState createState() => new ContactsPageState();
+
+}
+
+void main() {
+  runApp(
+      new MaterialApp(
+          title: 'Flutter Demo',
+          theme: new ThemeData(
+              primarySwatch: Colors.blue
+          ),
+          home: new ContactsPage()
+      )
+  );
 }
