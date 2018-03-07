@@ -24,5 +24,10 @@
 
 #import <Flutter/Flutter.h>
 
-@interface SfpluginPlugin : NSObject<FlutterPlugin>
+@interface SFFlutterBridge : NSObject
+
+@property(nonatomic, strong, readonly) NSString* prefix;
+
+- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result;
+
 @end

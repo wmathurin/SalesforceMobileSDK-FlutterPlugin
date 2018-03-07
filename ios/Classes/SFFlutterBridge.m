@@ -22,7 +22,12 @@
  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Flutter/Flutter.h>
+#import "SFFlutterBridge.h"
 
-@interface SfpluginPlugin : NSObject<FlutterPlugin>
+@implementation SFFlutterBridge
+
+- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    result(FlutterMethodNotImplemented);
+}
+
 @end

@@ -22,7 +22,12 @@
  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Flutter/Flutter.h>
+#import "SFSmartSyncFlutterBridge.h"
 
-@interface SfpluginPlugin : NSObject<FlutterPlugin>
+@implementation SFSmartSyncFlutterBridge
+
+- (NSString*) prefix {
+    return @"smartsync";
+}
+
 @end

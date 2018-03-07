@@ -22,25 +22,20 @@
  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <SalesforceSDKCore/NSDictionary+SFAdditions.h>
-#import <SalesforceSDKCore/SFRestAPI+Blocks.h>
 #import "SfpluginPlugin.h"
+#import "SFOauthFlutterBridge.h"
+#import "SFNetFlutterBridge.h"
+#import "SFSmartStoreFlutterBridge.h"
+#import "SFSmartSyncFlutterBridge.h"
 
-// Private constants
-static NSString * const kMethodArg       = @"method";
-static NSString * const kPathArg         = @"path";
-static NSString * const kEndPointArg     = @"endPoint";
-static NSString * const kQueryParams     = @"queryParams";
-static NSString * const kHeaderParams    = @"headerParams";
-static NSString * const kfileParams      = @"fileParams";
-static NSString * const kFileMimeType    = @"fileMimeType";
-static NSString * const kFileUrl         = @"fileUrl";
-static NSString * const kFileName        = @"fileName";
-static NSString * const kReturnBinary    = @"returnBinary";
-static NSString * const kEncodedBody     = @"encodedBody";
-static NSString * const kContentType     = @"contentType";
-static NSString * const kHttpContentType = @"content-type";
+@interface SfpluginPlugin ()
 
+@property(nonatomic, strong, readwrite) SFOauthFlutterBridge* oauthBridge;
+@property(nonatomic, strong, readwrite) SFNetFlutterBridge* networkBridge;
+@property(nonatomic, strong, readwrite) SFSmartStoreFlutterBridge* smartstoreBridge;
+@property(nonatomic, strong, readwrite) SFSmartSyncFlutterBridge* smartsyncBridge;
+
+@end
 
 @implementation SfpluginPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
@@ -51,96 +46,27 @@ static NSString * const kHttpContentType = @"content-type";
     [registrar addMethodCallDelegate:instance channel:channel];
 }
 
-- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-    if ([@"getPlatformVersion" isEqualToString:call.method]) {
-        result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
-    } else if ([@"network#sendRequest" isEqualToString:call.method]) {
-        [self sendRequest:call.arguments result:result];
-    } else {
-        result(FlutterMethodNotImplemented);
+- (instancetype) init {
+    self = [super init];
+    if (self) {
+        self.oauthBridge = [SFOauthFlutterBridge new];
+        self.networkBridge = [SFNetFlutterBridge new];
+        self.smartstoreBridge = [SFSmartStoreFlutterBridge new];
+        self.smartsyncBridge = [SFSmartSyncFlutterBridge new];
     }
+    return self;
 }
 
-- (void) sendRequest:(NSDictionary *)argsDict result:(FlutterResult)callback
-{
-    SFRestMethod method = [SFRestRequest sfRestMethodFromHTTPMethod:[argsDict nonNullObjectForKey:kMethodArg]];
-    NSString* endPoint = [argsDict nonNullObjectForKey:kEndPointArg];
-    NSString* path = [argsDict nonNullObjectForKey:kPathArg];
-    NSDictionary* queryParams = [argsDict nonNullObjectForKey:kQueryParams];
-    NSMutableDictionary* headerParams = [argsDict nonNullObjectForKey:kHeaderParams];
-    NSDictionary* fileParams = [argsDict nonNullObjectForKey:kfileParams];
-    BOOL returnBinary = [argsDict nonNullObjectForKey:kReturnBinary] != nil && [[argsDict nonNullObjectForKey:kReturnBinary] boolValue];
-    SFRestRequest* request = nil;
-
-    // Sets HTTP body explicitly for a POST, PATCH or PUT request.
-    if (method == SFRestMethodPOST || method == SFRestMethodPATCH || method == SFRestMethodPUT) {
-        request = [SFRestRequest requestWithMethod:method path:path queryParams:nil];
-        [request setCustomRequestBodyDictionary:queryParams contentType:@"application/json"];
-    } else {
-        request = [SFRestRequest requestWithMethod:method path:path queryParams:queryParams];
-    }
-
-    // Custom headers
-    [request setCustomHeaders:headerParams];
-    if (endPoint) {
-        [request setEndpoint:endPoint];
-    }
-
-    // Files post
-    if (fileParams) {
-
-        // File params expected to be of the form:
-        // {<fileParamNameInPost>: {fileMimeType:<someMimeType>, fileUrl:<fileUrl>, fileName:<fileNameForPost>}}
-        for (NSString* fileParamName in fileParams) {
-            NSDictionary* fileParam = fileParams[fileParamName];
-            NSString* fileMimeType = [fileParam nonNullObjectForKey:kFileMimeType];
-            NSString* fileUrl = [fileParam nonNullObjectForKey:kFileUrl];
-            NSString* fileName = [fileParam nonNullObjectForKey:kFileName];
-            NSData* fileData = [NSData dataWithContentsOfURL:[NSURL URLWithString:fileUrl]];
-            [request addPostFileData:fileData paramName:fileParamName description:nil fileName:fileName mimeType:fileMimeType];
+- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    NSString* prefix = [call.method componentsSeparatedByString:@"#"][0];
+    
+    for (SFNetFlutterBridge* bridge in @[self.oauthBridge, self.networkBridge, self.smartstoreBridge, self.smartsyncBridge]) {
+        if ([prefix isEqualToString:bridge.prefix]) {
+            [bridge handleMethodCall:call result:result];
+            return;
         }
     }
-
-    // Disable parsing for binary request
-    if (returnBinary) {
-        request.parseResponse = NO;
-    }
-
-
-    [[SFRestAPI sharedInstance] sendRESTRequest:request
-                                      failBlock:^(NSError *e, NSURLResponse *rawResponse) {
-                                          // XXX callback(@[RCTMakeError(@"sendRequest failed", e, nil)]);
-                                      }
-                                  completeBlock:^(id response, NSURLResponse *rawResponse) {
-                                      id result;
-
-                                      // Binary response
-                                      if (returnBinary) {
-                                          result = @{
-                                                     kEncodedBody:[((NSData*) response) base64EncodedStringWithOptions:0],
-                                                     kContentType:((NSHTTPURLResponse*) rawResponse).allHeaderFields[kHttpContentType]
-                                                     };
-                                      }
-                                      // Some response
-                                      else if (response) {
-                                          if ([response isKindOfClass:[NSDictionary class]]) {
-                                              result = response;
-                                          } else if ([response isKindOfClass:[NSArray class]]) {
-                                              result = response;
-                                          } else {
-                                              NSData* responseAsData = response;
-                                              NSStringEncoding encodingType = rawResponse.textEncodingName == nil ? NSUTF8StringEncoding :  CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)rawResponse.textEncodingName));
-                                              result = [[NSString alloc] initWithData:responseAsData encoding:encodingType];
-                                          }
-                                      }
-                                      // No response
-                                      else {
-                                          result = nil;
-                                      }
-
-                                      callback(result);
-                                  }
-     ];
+    result(FlutterMethodNotImplemented);
 }
 
 @end
