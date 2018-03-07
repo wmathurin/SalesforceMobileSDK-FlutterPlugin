@@ -28,7 +28,7 @@ package com.salesforce.flutter.sfpluginexample;
 
 import android.os.Bundle;
 import io.flutter.plugins.GeneratedPluginRegistrant;
-import com.salesforce.flutter.sfplugin.SalesforceFlutterActivity;
+import com.salesforce.flutter.sfplugin.ui.SalesforceFlutterActivity;
 
 public class MainActivity extends SalesforceFlutterActivity {
 

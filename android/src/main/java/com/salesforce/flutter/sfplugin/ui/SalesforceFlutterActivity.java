@@ -24,7 +24,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce.flutter.sfplugin;
+package com.salesforce.flutter.sfplugin.ui;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -41,9 +41,6 @@ import com.salesforce.androidsdk.smartsync.util.SmartSyncLogger;
 
 /**
  * Super class for all Salesforce flutter activities.
- *
- * XXX belongs in plugin
- *
  */
 public abstract class SalesforceFlutterActivity extends FlutterActivity implements SalesforceActivityInterface {
 
