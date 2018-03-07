@@ -123,7 +123,7 @@ public class SfpluginPlugin implements MethodCallHandler {
 
                         // Not a 2xx status
                         if (!response.isSuccess()) {
-                            // XXX errorCallback.invoke(response.asString());
+                            callback.error("Got http response " + response.getStatusCode(), response.asString(), null);
                         }
                         // Binary response
                         else if (returnBinary) {
@@ -144,12 +144,12 @@ public class SfpluginPlugin implements MethodCallHandler {
 
                 @Override
                 public void onError(Exception exception) {
-                    // XXX errorCallback.invoke(exception.getMessage());
+                    callback.error(exception.getClass().getName(), exception.getMessage(), exception);
                 }
             });
         }
         catch (Exception exception) {
-            // XXX errorCallback.invoke(exception.getMessage());
+            callback.error(exception.getClass().getName(), exception.getMessage(), exception);
         }
     }
 

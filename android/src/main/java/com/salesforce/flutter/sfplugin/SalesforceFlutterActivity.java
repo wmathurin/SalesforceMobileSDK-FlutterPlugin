@@ -56,9 +56,6 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
     private RestClient client;
     private ClientManager clientManager;
 
-    // Web app loaded?
-    private boolean flutterAppLoaded = false;
-
     protected SalesforceFlutterActivity() {
         super();
         delegate = new SalesforceActivityDelegate(this);
@@ -76,7 +73,7 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
      * Called if shouldAuthenticate() returned true but device is offline
      */
     public void onErrorAuthenticateOffline() {
-        Toast t = Toast.makeText(this, "Should authenticate but is offline" /* XXX move to resoruce*/, Toast.LENGTH_LONG);
+        Toast t = Toast.makeText(this, "Should authenticate but is offline" /* XXX move to resource*/, Toast.LENGTH_LONG);
         t.show();
     }
 
@@ -117,17 +114,7 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
 
         // Logged in
         else {
-
-            // Flutter app never loaded
-            if (!flutterAppLoaded) {
-                super.onResume();
-                flutterAppLoaded = true;
-            }
-
-            // Flutter app already loaded
-            else {
-                SmartSyncLogger.i(TAG, "onResume - already logged in/flutter app already loaded");
-            }
+            // Done
         }
     }
 
@@ -191,7 +178,7 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
                     logout();
                 } else {
                     SmartSyncLogger.i(TAG, "login callback triggered with actual client");
-                    // XXX restart activity
+                    recreate();
                 }
             }
         });
@@ -203,9 +190,6 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
 
     protected void setRestClient(RestClient restClient) {
         client = restClient;
-        if(client != null ){
-            loadFlutterAppOnceIfReady();
-        }
     }
 
     protected ClientManager buildClientManager() {
@@ -225,9 +209,5 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
     public void logout() {
         SmartSyncLogger.i(TAG, "logout called");
         SalesforceSDKManager.getInstance().logout(this);
-    }
-
-    private void loadFlutterAppOnceIfReady() {
-        // TBD
     }
 }
