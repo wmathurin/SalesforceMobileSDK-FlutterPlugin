@@ -2,13 +2,15 @@ group 'com.salesforce.flutter.sfplugin'
 version '1.0-SNAPSHOT'
 
 buildscript {
+    ext.kotlin_version = '1.2.71'
     repositories {
         google()
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -36,3 +38,4 @@ android {
 dependencies {
     api project(':libs:SmartSync')
 }
+

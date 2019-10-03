@@ -23,8 +23,11 @@
  */
 package com.salesforce.flutter.sfplugin.bridge;
 
-import android.support.annotation.NonNull;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Base64;
+
+import androidx.annotation.NonNull;
 
 import com.salesforce.androidsdk.rest.RestClient;
 import com.salesforce.androidsdk.rest.RestRequest;
@@ -32,9 +35,11 @@ import com.salesforce.androidsdk.rest.RestResponse;
 import com.salesforce.androidsdk.util.SalesforceSDKLogger;
 import com.salesforce.flutter.sfplugin.ui.SalesforceFlutterActivity;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,6 +58,7 @@ import okhttp3.RequestBody;
 public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
 
     private static final String PREFIX = "network";
+    private Handler uiThreadHandler = new Handler(Looper.getMainLooper());
 
     enum Method {
         sendRequest
@@ -110,27 +116,39 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
 
             restClient.sendAsync(request, new RestClient.AsyncRequestCallback() {
                 @Override
-                public void onSuccess(RestRequest request, RestResponse response) {
+                public void onSuccess(RestRequest request, final RestResponse response) {
                     try {
-                        SalesforceSDKLogger.d(TAG, "response: " + response.asString());
+                        final String resp = response.toString();
+                        uiThreadHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                SalesforceSDKLogger.d(TAG, "response (SalesforceNetFutterBridge): " + resp);
 
-                        // Sending a string over and letting javascript do a JSON.decode(result)
+                                // Sending a string over and letting javascript do a JSON.decode(result)
 
-                        // Not a 2xx status
-                        if (!response.isSuccess()) {
-                            callback.error("Got http response " + response.getStatusCode(), response.asString(), null);
-                        }
-                        // Binary response
-                        else if (returnBinary) {
-                            JSONObject result = new JSONObject();
-                            result.put(CONTENT_TYPE, response.getContentType());
-                            result.put(ENCODED_BODY, Base64.encodeToString(response.asBytes(), Base64.DEFAULT));
-                            callback.success(result.toString());
-                        }
-                        // Other cases
-                        else {
-                            callback.success(response.asString());
-                        }
+                                // Not a 2xx status
+                                if (!response.isSuccess()) {
+                                    callback.error("Got http response " + response.getStatusCode(), resp, null);
+                                }
+                                // Binary response
+                                else if (returnBinary) {
+                                    try {
+
+                                        JSONObject result = new JSONObject();
+                                        result.put(CONTENT_TYPE, response.getContentType());
+                                        result.put(ENCODED_BODY, Base64.encodeToString(response.asBytes(), Base64.DEFAULT));
+                                        callback.success(result.toString());
+                                    } catch (JSONException | IOException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                                // Other cases
+                                else {
+                                    callback.success(resp);
+                                }
+                            }
+                        });
                     } catch (Exception e) {
                         returnError("sendRequest failed", e, callback);
                     }

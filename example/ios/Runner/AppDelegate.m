@@ -23,7 +23,7 @@
  */
 
 #import "AppDelegate.h"
-#import <SalesforceAnalytics/SFSDKLogger.h>
+#import <SalesforceAnalytics/SFSDKAnalyticsLogger.h>
 #import <SalesforceSDKCore/SFSDKAppConfig.h>
 #import <SalesforceSDKCore/SFPushNotificationManager.h>
 #import <SalesforceSDKCore/SFDefaultUserManagementViewController.h>
@@ -71,11 +71,11 @@ static NSString * const OAuthRedirectURI        = @"testsfdc:///mobilesdk/detect
             //[[SFPushNotificationManager sharedInstance] registerForRemoteNotifications];
             //
 
-            [SFSDKLogger log:[weakSelf class] level:DDLogLevelInfo format:@"Post-launch: launch actions taken: %@", [SalesforceSDKManager launchActionsStringRepresentation:launchActionList]];
+            [SFSDKAnalyticsLogger log:[weakSelf class] level:SFLogLevelInfo format:@"Post-launch: launch actions taken: %@", [SalesforceSDKManager launchActionsStringRepresentation:launchActionList]];
             [weakSelf setupRootViewController];
         };
         [SalesforceSDKManager sharedManager].launchErrorAction = ^(NSError *error, SFSDKLaunchAction launchActionList) {
-            [SFSDKLogger log:[weakSelf class] level:DDLogLevelError format:@"Error during SDK launch: %@", [error localizedDescription]];
+            [SFSDKAnalyticsLogger log:[weakSelf class] level:SFLogLevelError format:@"Error during SDK launch: %@", [error localizedDescription]];
             [weakSelf initializeAppViewState];
             [[SalesforceSDKManager sharedManager] launch];
         };
@@ -179,7 +179,7 @@ static NSString * const OAuthRedirectURI        = @"testsfdc:///mobilesdk/detect
 
 - (void)handleSdkManagerLogout
 {
-    [SFSDKLogger log:[self class] level:DDLogLevelDebug format:@"SFUserAccountManager logged out.  Resetting app."];
+    [SFSDKAnalyticsLogger log:[self class] level:SFLogLevelDebug format:@"SFUserAccountManager logged out.  Resetting app."];
     [self resetViewState:^{
         [self initializeAppViewState];
 
@@ -210,7 +210,7 @@ static NSString * const OAuthRedirectURI        = @"testsfdc:///mobilesdk/detect
 - (void)handleUserSwitch:(SFUserAccount *)fromUser
                   toUser:(SFUserAccount *)toUser
 {
-    [SFSDKLogger log:[self class] level:DDLogLevelDebug format:@"SFUserAccountManager changed from user %@ to %@.  Resetting app.",
+    [SFSDKAnalyticsLogger log:[self class] level:SFLogLevelDebug format:@"SFUserAccountManager changed from user %@ to %@.  Resetting app.",
      fromUser.userName, toUser.userName];
     [self resetViewState:^{
         [self initializeAppViewState];

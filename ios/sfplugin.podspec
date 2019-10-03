@@ -18,6 +18,6 @@ Pod::Spec.new do |s|
   s.dependency 'SalesforceSDKCore'
   s.dependency 'SalesforceAnalytics'
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '11.0'
 end
 
