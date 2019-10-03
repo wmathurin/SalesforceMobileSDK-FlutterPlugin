@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.salesforce.androidsdk" 
+	android:versionCode="66"
+	android:versionName="7.3.0">
+
+    <application>
+
+        <!-- Metadata for supported app restrictions -->
+        <meta-data android:name="android.content.APP_RESTRICTIONS"
+            android:resource="@xml/app_restrictions" />
+
+        <!-- Service required for authentication -->
+        <service android:exported="true"
+            android:name="com.salesforce.androidsdk.auth.AuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <!-- Login activity -->
+        <!--
+            Launch mode of "singleInstance" ensures that the activity isn't restarted
+            by a callback from Chrome custom tab when auth flow is complete. This is
+            required for the Chrome custom tab auth flow to work correctly.
+        -->
+        <activity android:name="com.salesforce.androidsdk.ui.LoginActivity"
+            android:theme="@style/SalesforceSDK.ActionBarTheme"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+
+        <!-- Passcode activity -->
+        <activity android:name="com.salesforce.androidsdk.ui.PasscodeActivity"
+            android:theme="@style/Theme.Design.NoActionBar"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
+
+        <!-- Manage space activity -->
+        <activity android:name="com.salesforce.androidsdk.ui.ManageSpaceActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/SalesforceSDK.ActionBarTheme" />
+
+        <!-- Choose server activity -->
+        <activity android:name="com.salesforce.androidsdk.ui.ServerPickerActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/SalesforceSDK.ActionBarTheme"
+            android:screenOrientation="portrait" />
+
+        <!-- Account switcher activity -->
+        <activity android:name="com.salesforce.androidsdk.ui.AccountSwitcherActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/SalesforceSDK.ActionBarTheme"
+            android:screenOrientation="portrait" />
+
+        <!-- IDP webview activity -->
+        <activity android:name="com.salesforce.androidsdk.auth.idp.IDPCodeGeneratorActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/SalesforceSDK.ActionBarTheme"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!--  Dev info activity -->
+        <activity android:name="com.salesforce.androidsdk.ui.DevInfoActivity"
+            android:theme="@style/SalesforceSDK.ActionBarTheme"
+            android:exported="false" />
+
+        <!-- Receiver for IDP initiated login flow -->
+        <receiver android:name="com.salesforce.androidsdk.auth.idp.IDPInititatedLoginReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.salesforce.IDP_LOGIN_REQUEST" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="com.salesforce.androidsdk.push.SFDCFcmListenerService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service android:name="com.salesforce.androidsdk.push.SFDCRegistrationIntentService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false">
+        </service>
+
+        <receiver android:name="com.salesforce.androidsdk.push.PushService$SFDCRegistrationRetryAlarmReceiver"
+            android:exported="false" />
+
+        <service android:name="com.salesforce.androidsdk.push.PushService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
+
+        <service android:name="com.salesforce.androidsdk.analytics.AnalyticsPublisherService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
+    </application>
+
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+
+    <!-- USE_FINGERPRINT is available from API 23 to API 27 and should be removed once minAPI > 27 -->
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+
+    <!-- USE_BIOMETRIC is available on API 28 and higher -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+</manifest>
