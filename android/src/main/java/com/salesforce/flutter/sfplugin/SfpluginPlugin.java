@@ -26,21 +26,11 @@ package com.salesforce.flutter.sfplugin;
 import android.app.Activity;
 import android.content.Context;
 
-import com.salesforce.flutter.sfplugin.bridge.SalesforceFlutterBridge;
-import com.salesforce.flutter.sfplugin.bridge.SalesforceNetFlutterBridge;
-import com.salesforce.flutter.sfplugin.bridge.SalesforceOauthFlutterBridge;
-import com.salesforce.flutter.sfplugin.bridge.SmartStoreFlutterBridge;
-import com.salesforce.flutter.sfplugin.bridge.SmartSyncFlutterBridge;
-import com.salesforce.flutter.sfplugin.ui.SalesforceFlutterActivity;
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
-import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /**

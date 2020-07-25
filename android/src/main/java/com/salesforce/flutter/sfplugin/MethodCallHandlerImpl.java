@@ -35,8 +35,6 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
 
     void setActivity(Activity activity) {
         this.activity = activity;
-
-
     }
 
     @Override
@@ -44,7 +42,7 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
         String prefix = call.method.substring(0, call.method.indexOf("#"));
 
         for (SalesforceFlutterBridge bridge : new SalesforceFlutterBridge[] { oauthBridge, networkBridge, smartStoreFlutterBridge, smartSyncFlutterBridge}) {
-            if (call.method.startsWith(bridge.getPrefix() + "#")) {
+            if (prefix.equals(bridge.getPrefix())) {
                 bridge.onMethodCall(call, result);
                 return;
             }
