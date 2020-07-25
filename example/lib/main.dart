@@ -60,12 +60,6 @@ class ContactsPageState extends State<ContactsPage> {
         setState(() => this.contacts = contacts);
       }
 
-
-      //metadata
-      Map response2 = await SalesforcePlugin.describe("Contact");
-      print('results: ${response2}');
-
-
     } on Exception catch (e){
       print('Error: ${e.toString()}');
     }
