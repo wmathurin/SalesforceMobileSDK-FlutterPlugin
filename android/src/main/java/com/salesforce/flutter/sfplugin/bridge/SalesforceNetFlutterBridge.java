@@ -98,8 +98,7 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
         }
     }
 
-    protected void sendRequest(Map<String, Object> args,
-                            final MethodChannel.Result callback) {
+    protected void sendRequest(Map<String, Object> args, final MethodChannel.Result callback) {
 
         try {
             // Getting restClient
@@ -122,7 +121,7 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
                         uiThreadHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                SalesforceSDKLogger.d(TAG, "response (SalesforceNetFutterBridge): " + resp);
+                                //SalesforceSDKLogger.d(TAG, "response (SalesforceNetFutterBridge): " + resp);
 
                                 // Sending a string over and letting javascript do a JSON.decode(result)
 
@@ -206,6 +205,9 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
     }
 
     private static String buildQueryString(Map<String, Object> params) throws UnsupportedEncodingException {
+        if (params == null){
+            return "";
+        }
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             sb.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue().toString(), RestRequest.UTF_8)).append("&");

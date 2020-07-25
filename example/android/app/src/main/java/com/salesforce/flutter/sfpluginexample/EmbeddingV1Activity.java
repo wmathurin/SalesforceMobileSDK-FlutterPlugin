@@ -28,12 +28,8 @@ package com.salesforce.flutter.sfpluginexample;
 
 import android.os.Bundle;
 
-import com.salesforce.androidsdk.smartsync.app.SmartSyncSDKManager;
 import com.salesforce.flutter.sfplugin.SfpluginPlugin;
 import com.salesforce.flutter.sfplugin.ui.SalesforceFlutterActivity;
-
-import io.flutter.app.FlutterActivity;
-import io.flutter.app.FlutterApplication;
 
 /**
  * Application class for our application.

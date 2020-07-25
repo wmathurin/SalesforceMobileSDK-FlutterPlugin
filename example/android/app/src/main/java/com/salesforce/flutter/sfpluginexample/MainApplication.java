@@ -16,7 +16,7 @@ public class MainApplication extends FlutterApplication {
          * either authenticate using the current app or use a designated IDP app for login.
          * Replace 'idpAppURIScheme' with the URI scheme of the IDP app meant to be used.
          */
-        // SmartSyncSDKManager.getInstance().setIDPAppURIScheme(idpAppURIScheme);
+        //SmartSyncSDKManager.getInstance().setIDPAppURIScheme(idpAppURIScheme);
 
         /*
          * Uncomment the following line to enable browser based login. This will use a
@@ -31,7 +31,7 @@ public class MainApplication extends FlutterApplication {
          * Add your Google package ID in 'bootonfig.xml', as the value
          * for the key 'androidPushNotificationClientId'.
          */
-        // SmartSyncSDKManager.getInstance().setPushNotificationReceiver(pnInterface);
+         //SmartSyncSDKManager.getInstance().setPushNotificationReceiver(pnInterface);
     }
 
 }

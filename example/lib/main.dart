@@ -49,22 +49,25 @@ class ContactsPageState extends State<ContactsPage> {
   }
 
   void fetchData() async {
-    Map response = await SalesforcePlugin.query("SELECT Id, Name, Email FROM User LIMIT 50");
 
-    if (response == null){
-      return;
-    }
+    try {
+      //Query test
+      Map response = await SalesforcePlugin.query("SELECT Id, Name, Email FROM Contact LIMIT 10000");
+      final List<dynamic> records = response['records'] ?? [];
+      final List<Contact> contacts = records.map((record) => new Contact(name: record["Name"] ?? "", email: record["Email"]  ?? "")).toList();
+      print('results: ${contacts.length}');
+      if (mounted) {
+        setState(() => this.contacts = contacts);
+      }
 
-    List<Contact> contacts = List<Contact>();
-    for(Map record in response["records"]){
-      contacts.add(new Contact(name: record["Name"], email: record["Email"]));
-    }
-    // = response["records"].map((record) => new Contact(name: record["Name"], email: record["Email"])).toList();
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (mounted) {
-      setState(() => this.contacts = contacts);
+
+      //metadata
+      Map response2 = await SalesforcePlugin.describe("Contact");
+      print('results: ${response2}');
+
+
+    } on Exception catch (e){
+      print('Error: ${e.toString()}');
     }
   }
 
@@ -73,8 +76,21 @@ class ContactsPageState extends State<ContactsPage> {
     return new Scaffold(
         appBar: new AppBar(
           title: new Text("Contacts"),
+          actions: [
+            IconButton(
+              icon: Text("${this.contacts.length}"),
+              onPressed: null,
+            ),
+          ],
         ),
-        body: new ContactList(this.contacts)
+        body: new ContactList(this.contacts),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            setState(() => this.contacts = []);
+            fetchData(); // asynchronous
+          },
+          child: Icon(Icons.refresh),
+        ),
     );
   }
 }
@@ -93,7 +109,7 @@ void main() {
           theme: new ThemeData(
               primarySwatch: Colors.blue
           ),
-          home: new ContactsPage()
+          home: new ContactsPage(),
       )
   );
 }
