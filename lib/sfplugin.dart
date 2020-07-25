@@ -6,8 +6,7 @@ import 'package:flutter/services.dart';
 class SalesforcePlugin {
   static String apiVersion = 'v42.0';
 
-  static const MethodChannel _channel =
-  const MethodChannel('sfplugin');
+  static const MethodChannel _channel = const MethodChannel('sfplugin');
 
   /**
    * Send arbitrary force.com request

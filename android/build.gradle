@@ -2,15 +2,13 @@ group 'com.salesforce.flutter.sfplugin'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.2.71'
     repositories {
         google()
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:3.6.3'
     }
 }
 
@@ -24,11 +22,11 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 29
 
     defaultConfig {
-        minSdkVersion 21
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion 23
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     lintOptions {
         disable 'InvalidPackage'
@@ -36,6 +34,8 @@ android {
 }
 
 dependencies {
-    api project(':libs:SmartSync')
+    implementation 'com.salesforce.mobilesdk:SalesforceSDK:8.2.0'
+    implementation 'com.salesforce.mobilesdk:SalesforceAnalytics:8.2.0'
+    implementation 'com.salesforce.mobilesdk:SmartStore:8.2.0'
+    implementation 'com.salesforce.mobilesdk:SmartSync:7.3.0'
 }
-

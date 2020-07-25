@@ -5,7 +5,7 @@ def flutterProjectRoot = rootProject.projectDir.parentFile.toPath()
 def plugins = new Properties()
 def pluginsFile = new File(flutterProjectRoot.toFile(), '.flutter-plugins')
 if (pluginsFile.exists()) {
-    pluginsFile.withReader('UTF-8') { reader -> plugins.load(reader) }
+    pluginsFile.withInputStream { stream -> plugins.load(stream) }
 }
 
 plugins.each { name, path ->
@@ -13,18 +13,3 @@ plugins.each { name, path ->
     include ":$name"
     project(":$name").projectDir = pluginDirectory
 }
-
-def libsRootDir = new File( settingsDir, '../../mobile_sdk/SalesforceMobileSDK-Android/libs' )
-include ':app'
-
-include ':libs:SalesforceAnalytics'
-project( ':libs:SalesforceAnalytics' ).projectDir = new File( libsRootDir, 'SalesforceAnalytics' )
-
-include ':libs:SalesforceSDK'
-project( ':libs:SalesforceSDK' ).projectDir = new File( libsRootDir, 'SalesforceSDK' )
-
-include ':libs:SmartStore'
-project( ':libs:SmartStore' ).projectDir = new File( libsRootDir, 'SmartStore' )
-
-include ':libs:SmartSync'
-project( ':libs:SmartSync' ).projectDir = new File( libsRootDir, 'SmartSync' )
