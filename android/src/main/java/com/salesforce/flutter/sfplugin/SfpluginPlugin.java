@@ -23,6 +23,9 @@
  */
 package com.salesforce.flutter.sfplugin;
 
+import android.app.Activity;
+import android.content.Context;
+
 import com.salesforce.flutter.sfplugin.bridge.SalesforceFlutterBridge;
 import com.salesforce.flutter.sfplugin.bridge.SalesforceNetFlutterBridge;
 import com.salesforce.flutter.sfplugin.bridge.SalesforceOauthFlutterBridge;
@@ -30,6 +33,10 @@ import com.salesforce.flutter.sfplugin.bridge.SmartStoreFlutterBridge;
 import com.salesforce.flutter.sfplugin.bridge.SmartSyncFlutterBridge;
 import com.salesforce.flutter.sfplugin.ui.SalesforceFlutterActivity;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -39,39 +46,59 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 /**
  * Salesforce flutter plugin
  */
-public class SfpluginPlugin implements MethodCallHandler {
+public class SfpluginPlugin implements FlutterPlugin, ActivityAware {
 
-    private final SalesforceOauthFlutterBridge oauthBridge;
-    private final SalesforceNetFlutterBridge networkBridge;
-    private final SmartStoreFlutterBridge smartStoreFlutterBridge;
-    private final SmartSyncFlutterBridge smartSyncFlutterBridge;
-
+    private static final String CHANNEL_ID = "sfplugin";
+    private MethodChannel channel;
+    private MethodCallHandlerImpl handler;
 
     /**
      * Plugin registration.
      */
     public static void registerWith(Registrar registrar) {
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), "sfplugin");
-        channel.setMethodCallHandler(new SfpluginPlugin((SalesforceFlutterActivity) registrar.activity()));
-    }
-
-    private SfpluginPlugin(SalesforceFlutterActivity currentActivity) {
-        this.networkBridge = new SalesforceNetFlutterBridge(currentActivity);
-        this.oauthBridge = new SalesforceOauthFlutterBridge(currentActivity);
-        this.smartStoreFlutterBridge = new SmartStoreFlutterBridge(currentActivity);
-        this.smartSyncFlutterBridge = new SmartSyncFlutterBridge(currentActivity);
+        final SfpluginPlugin plugin = new SfpluginPlugin();
+        plugin.setupChannel(registrar.messenger(), registrar.context(), registrar.activity());
     }
 
     @Override
-    public void onMethodCall(MethodCall call, Result result) {
-        String prefix = call.method.substring(0, call.method.indexOf("#"));
+    public void onAttachedToEngine(FlutterPluginBinding binding) {
+        setupChannel(binding.getBinaryMessenger(), binding.getApplicationContext(), null);
+    }
 
-        for (SalesforceFlutterBridge bridge : new SalesforceFlutterBridge[] { oauthBridge, networkBridge, smartStoreFlutterBridge, smartSyncFlutterBridge}) {
-            if (call.method.startsWith(bridge.getPrefix() + "#")) {
-                bridge.onMethodCall(call, result);
-                return;
-            }
-        }
-        result.notImplemented();
+    @Override
+    public void onDetachedFromEngine(FlutterPluginBinding binding) {
+        teardownChannel();
+    }
+
+    @Override
+    public void onAttachedToActivity(ActivityPluginBinding binding) {
+        handler.setActivity(binding.getActivity());
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        handler.setActivity(null);
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) {
+        onAttachedToActivity(binding);
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        onDetachedFromActivity();
+    }
+
+    private void setupChannel(BinaryMessenger messenger, Context context, Activity activity) {
+        channel = new MethodChannel(messenger, CHANNEL_ID);
+        handler = new MethodCallHandlerImpl(context, activity);
+        channel.setMethodCallHandler(handler);
+    }
+
+    private void teardownChannel() {
+        channel.setMethodCallHandler(null);
+        channel = null;
+        handler = null;
     }
 }

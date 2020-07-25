@@ -1,108 +1,42 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.salesforce.flutter.sfpluginexample"
-    android:versionCode="1"
-    android:versionName="1.0"
-    android:installLocation="internalOnly">
+    package="com.salesforce.flutter.sfpluginexample">
 
-    <application android:icon="@drawable/sf__icon"
-        android:label="@string/app_name"
-        android:name=".MainApplication"
-        android:manageSpaceActivity="com.salesforce.androidsdk.ui.ManageSpaceActivity">
-
-        <!-- Launcher screen -->
-        <activity android:name=".MainActivity"
-            android:label="salesforce_flutter_plugin_example"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale"
-            android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize">
-            <!-- This keeps the window background of the activity showing
-                 until Flutter renders its first frame. It can be removed if
-                 there is no splash screen (such as the default splash screen
-                 defined in @style/LaunchTheme). -->
-            <meta-data
-                android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
-                android:value="true" />
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-
-        <!-- Login activity -->
-        <!--
-            Launch mode of "singleInstance" ensures that the activity isn't restarted
-            by a callback from Chrome custom tab when auth flow is complete. This is
-            required for the Chrome custom tab auth flow to work correctly.
-        -->
-        <!--
-            To enable browser based authentication, uncomment the lines below and replace
-            'scheme', 'host' and 'path' with their corresponding values from your connected app.
-
-            For example, if the callback URL of your connected app is
-            "testsfdc:///mobilesdk/detect/oauth/done",
-            'scheme' would be "testsfdc", 'host' would be "*" since it doesn't exist, and
-            'path' would be "/mobilesdk/detect/oauth/done".
-
-            If the callback URL is "sfdc://login.salesforce.com/oauth/done",
-            'scheme' would be "sfdc", 'host' would be "login.salesforce.com",
-            and 'path' would be "/oauth/done".
-        -->
-        <!--
-        <activity android:name="com.salesforce.androidsdk.ui.LoginActivity"
-            android:theme="@style/SalesforceSDK.ActionBarTheme"
-            android:launchMode="singleInstance">
-
-            <intent-filter>
-                <data android:scheme="testsfdc"
-                    android:host="*"
-                    android:path="/mobilesdk/detect/oauth/done" />
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        -->
-
-        <!-- IDP account picker activity -->
-        <!--
-            To enable this app as an IDP app that's capable of handling authentication
-            requests originating from other SP apps, uncomment the lines below and replace
-            'scheme' and 'host' with the values you wish to use to define your IDP app.
-            The URI constructed from this must be unique and will be set in the SP app
-            as well. This will be used to launch the IDP app from the SP app.
-
-            In the example given below, 'scheme' is "com.salesforce.androidnativetemplate" and
-            'host' is "authenticator". The full URI that needs to be set on the SP app would be
-            "com.salesforce.androidnativetemplate://authenticator".
-        -->
-        <!--
-        <activity android:name="com.salesforce.androidsdk.auth.idp.IDPAccountPickerActivity"
-            android:excludeFromRecents="true"
-            android:theme="@style/SalesforceSDK.ActionBarTheme">
-
-            <intent-filter>
-                <data android:scheme="com.salesforce.androidnativetemplate"
-                    android:host="authenticator" />
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        -->
-    </application>
-
-    <uses-sdk android:targetSdkVersion="27" />
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
     <!--
         GCM permission to ensure that only this application can
         receive the messages and registration result. This must be of
         the format <app-package-name>.C2D_MESSAGE for it to work.
     -->
-    <permission android:name="com.salesforce.salesforceflutterpluginexample.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-
+    <permission android:name="com.salesforce.salesforceflutterpluginexample.C2D_MESSAGE" android:protectionLevel="signature" />
     <uses-permission android:name="com.salesforce.salesforceflutterpluginexample.C2D_MESSAGE" />
+
+    <application
+        android:name=".MainApplication"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:manageSpaceActivity="com.salesforce.androidsdk.ui.ManageSpaceActivity">
+
+        <activity
+            android:name=".EmbeddingV1Activity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
+                android:value="true" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+    </application>
 </manifest>

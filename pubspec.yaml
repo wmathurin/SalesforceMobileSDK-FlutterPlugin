@@ -17,8 +17,12 @@ dependencies:
 # The following section is specific to Flutter.
 flutter:
   plugin:
-    androidPackage: com.salesforce.flutter.sfplugin
-    pluginClass: SfpluginPlugin
+    platforms:
+      android:
+        package: com.salesforce.flutter.sfplugin
+        pluginClass: SfpluginPlugin
+      ios:
+        pluginClass: SfpluginPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

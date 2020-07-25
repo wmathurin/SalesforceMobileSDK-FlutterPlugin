@@ -27,24 +27,32 @@
 package com.salesforce.flutter.sfpluginexample;
 
 import android.os.Bundle;
-import io.flutter.plugins.GeneratedPluginRegistrant;
+
+import com.salesforce.androidsdk.smartsync.app.SmartSyncSDKManager;
+import com.salesforce.flutter.sfplugin.SfpluginPlugin;
 import com.salesforce.flutter.sfplugin.ui.SalesforceFlutterActivity;
 
-public class MainActivity extends SalesforceFlutterActivity {
+import io.flutter.app.FlutterActivity;
+import io.flutter.app.FlutterApplication;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    GeneratedPluginRegistrant.registerWith(this);
-  }
+/**
+ * Application class for our application.
+ */
+public class EmbeddingV1Activity extends SalesforceFlutterActivity {
 
-  /**
-   * @return true if you want login to happen when application launches
-   * false otherwise
-   */
-  @Override
-  public boolean shouldAuthenticate() {
-    return true;
-  }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        SfpluginPlugin.registerWith(registrarFor("sfplugin"));
+    }
+
+    /**
+     * @return true if you want login to happen when application launches
+     * false otherwise
+     */
+    @Override
+    public boolean shouldAuthenticate() {
+        return true;
+    }
 
 }

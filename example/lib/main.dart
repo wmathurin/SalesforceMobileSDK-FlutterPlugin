@@ -51,6 +51,10 @@ class ContactsPageState extends State<ContactsPage> {
   void fetchData() async {
     Map response = await SalesforcePlugin.query("SELECT Id, Name, Email FROM User LIMIT 50");
 
+    if (response == null){
+      return;
+    }
+
     List<Contact> contacts = List<Contact>();
     for(Map record in response["records"]){
       contacts.add(new Contact(name: record["Name"], email: record["Email"]));
