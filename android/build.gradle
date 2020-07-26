@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.3'
+        classpath 'com.android.tools.build:gradle:3.3.0'
     }
 }
 
@@ -20,6 +20,7 @@ rootProject.allprojects {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -38,4 +39,9 @@ dependencies {
     implementation 'com.salesforce.mobilesdk:SalesforceAnalytics:8.2.0'
     implementation 'com.salesforce.mobilesdk:SmartStore:8.2.0'
     implementation 'com.salesforce.mobilesdk:SmartSync:7.3.0'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }

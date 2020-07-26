@@ -38,7 +38,7 @@ import com.salesforce.androidsdk.smartsync.util.SmartSyncLogger;
 import com.salesforce.androidsdk.ui.SalesforceActivityDelegate;
 import com.salesforce.androidsdk.ui.SalesforceActivityInterface;
 
-import io.flutter.app.FlutterFragmentActivity;
+import io.flutter.embedding.android.FlutterFragmentActivity;
 
 /**
  * Super class for all Salesforce flutter activities.
