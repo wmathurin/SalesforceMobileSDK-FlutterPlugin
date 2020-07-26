@@ -38,7 +38,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
  */
 public class SfpluginPlugin implements FlutterPlugin, ActivityAware {
 
-    private static final String CHANNEL_ID = "sfplugin";
+    private static final String CHANNEL_ID = "com.salesforce.flutter.Sfplugin";
     private MethodChannel channel;
     private MethodCallHandlerImpl handler;
 

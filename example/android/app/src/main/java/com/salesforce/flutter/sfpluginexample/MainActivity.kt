@@ -37,7 +37,7 @@ class MainActivity : SalesforceFlutterActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         initSalesforce()
         super.onCreate(savedInstanceState)
-        SfpluginPlugin.registerWith(registrarFor("sfplugin"))
+        SfpluginPlugin.registerWith(registrarFor("com.salesforce.flutter.Sfplugin"))
     }
 
     /**

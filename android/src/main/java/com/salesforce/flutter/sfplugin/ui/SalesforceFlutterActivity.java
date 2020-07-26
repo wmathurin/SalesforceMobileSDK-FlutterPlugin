@@ -38,7 +38,6 @@ import com.salesforce.androidsdk.ui.SalesforceActivityDelegate;
 import com.salesforce.androidsdk.ui.SalesforceActivityInterface;
 
 import io.flutter.app.FlutterActivity;
-import io.flutter.app.FlutterFragmentActivity;
 
 import com.salesforce.androidsdk.smartsync.util.SmartSyncLogger;
 
