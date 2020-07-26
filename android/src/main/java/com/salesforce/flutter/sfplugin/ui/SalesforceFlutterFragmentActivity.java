@@ -34,18 +34,16 @@ import com.salesforce.androidsdk.app.SalesforceSDKManager;
 import com.salesforce.androidsdk.rest.ClientManager;
 import com.salesforce.androidsdk.rest.ClientManager.RestClientCallback;
 import com.salesforce.androidsdk.rest.RestClient;
+import com.salesforce.androidsdk.smartsync.util.SmartSyncLogger;
 import com.salesforce.androidsdk.ui.SalesforceActivityDelegate;
 import com.salesforce.androidsdk.ui.SalesforceActivityInterface;
 
-import io.flutter.app.FlutterActivity;
 import io.flutter.app.FlutterFragmentActivity;
-
-import com.salesforce.androidsdk.smartsync.util.SmartSyncLogger;
 
 /**
  * Super class for all Salesforce flutter activities.
  */
-public abstract class SalesforceFlutterActivity extends FlutterActivity implements SalesforceActivityInterface {
+public abstract class SalesforceFlutterFragmentActivity extends FlutterFragmentActivity implements SalesforceActivityInterface {
 
     private static final String TAG = "SfFlutterActivity";
 
@@ -56,7 +54,7 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
     private RestClient client;
     private ClientManager clientManager;
 
-    protected SalesforceFlutterActivity() {
+    protected SalesforceFlutterFragmentActivity() {
         super();
         delegate = new SalesforceActivityDelegate(this);
     }
