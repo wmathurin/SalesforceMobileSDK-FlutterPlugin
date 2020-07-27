@@ -23,6 +23,8 @@
  */
 package com.salesforce.flutter.bridge;
 
+import com.salesforce.androidsdk.rest.RestClient;
+import com.salesforce.androidsdk.util.SalesforceSDKLogger;
 import com.salesforce.flutter.ui.SalesforceFlutterActivity;
 
 import io.flutter.plugin.common.MethodCall;
@@ -36,7 +38,8 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
     public static final String PREFIX = "oauth";
 
     enum Method {
-
+        getAuthCredentials,
+        getClientInfo
     }
 
     private static final String TAG = "SalesforceOauthFlutterBridge";
@@ -54,8 +57,61 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         Method method = Method.valueOf(call.method.substring(PREFIX.length() + 1));
         switch(method) {
+            case getAuthCredentials:
+                getAuthCredentials(result);
+                break;
+            case getClientInfo:
+                getClientInfo(result);
+                break;
             default:
                 result.notImplemented();
         }
+    }
+
+    protected void getAuthCredentials(final MethodChannel.Result callback) {
+        try {
+            // Getting restClient
+            RestClient restClient = getRestClient();
+
+            if (restClient == null) {
+                callback.error("No restClient", null, null);
+                return;
+            }
+
+            callback.success(restClient.getJSONCredentials().toString());
+
+        } catch (Exception exception) {
+            returnError("sendRequest failed", exception, callback);
+        }
+    }
+
+    protected void getClientInfo(final MethodChannel.Result callback) {
+        try {
+            // Getting restClient
+            RestClient restClient = getRestClient();
+
+            if (restClient == null) {
+                callback.error("No restClient", null, null);
+                return;
+            }
+            callback.success(restClient.getClientInfo().toString());
+
+        } catch (Exception exception) {
+            returnError("sendRequest failed", exception, callback);
+        }
+    }
+
+    /**
+     * Returns the RestClient instance being used by this bridge.
+     *
+     * @return RestClient instance.
+     */
+    protected RestClient getRestClient() {
+        return currentActivity != null ? currentActivity.getRestClient() : null;
+    }
+
+    private void returnError(String message, Exception exception, MethodChannel.Result callback) {
+        SalesforceSDKLogger.e(TAG, message, exception);
+        callback.error(exception.getClass().getName(), exception.getMessage(), exception);
     }
 }

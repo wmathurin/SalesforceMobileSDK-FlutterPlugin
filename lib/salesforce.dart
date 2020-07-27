@@ -8,6 +8,10 @@ class SalesforcePlugin {
   static String apiVersion = 'v48.0';
 
   /*
+   * Network methods
+   */
+
+  /*
    * Send arbitrary force.com request
    * @param endPoint
    * @param path
@@ -181,5 +185,48 @@ class SalesforcePlugin {
    * @param [error=null] function called in case of error
   */
   static Future<Map> getAttachment(String id) => sendRequest(path: "/$apiVersion/sobjects/Attachment/$id/Body", method: 'GET', returnBinary: true);
+
+
+  /*
+   * Oauth methods
+   */
+
+  /*
+   * Obtain authentication credentials.
+   *   success - The success callback function to use.
+   *   fail    - The failure/error callback function to use.
+   * Returns a dictionary with:
+   *   accessToken
+   *   refreshToken
+   *   clientId
+   *   userId
+   *   orgId
+   *   loginUrl
+   *   instanceUrl
+   *   userAgent
+   *   community id
+   *   community url
+   */
+  static Future<Map> getAuthCredentials() async {
+    try {
+      final Object response = await _channel.invokeMethod(
+          'oauth#getAuthCredentials'
+      );
+      return response is Map ? response : json.decode(response);
+    } on Exception catch (e){
+      throw new Exception('Salesforce Error: ${e.toString()}');
+    }
+  }
+
+  static Future<Object> getClientInfo() async {
+    try {
+      final Object response = await _channel.invokeMethod(
+          'oauth#getClientInfo'
+      );
+      return response;
+    } on Exception catch (e){
+      throw new Exception('Salesforce Error: ${e.toString()}');
+    }
+  }
 
 }

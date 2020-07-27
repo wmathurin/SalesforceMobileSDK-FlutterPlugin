@@ -23,11 +23,37 @@
  */
 
 #import "SFOauthFlutterBridge.h"
+#import <SalesforceSDKCore/NSDictionary+SFAdditions.h>
+#import <SalesforceSDKCore/SFRestAPI+Blocks.h>
+#import <SalesforceSDKCore/SalesforceSDKManager.h>
+#import <SalesforceSDKCore/SFUserAccountManager.h>
 
 @implementation SFOauthFlutterBridge
 
 - (NSString*) prefix {
     return @"oauth";
+}
+
+- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    if ([@"oauth#getAuthCredentials" isEqualToString:call.method]) {
+        [self getAuthCredentials:result:result];
+    } else if ([@"oauth#getClientInfo" isEqualToString:call.method]) {
+       [self getClientInfo:result:result];
+   } else {
+        result(FlutterMethodNotImplemented);
+    }
+}
+
+- (void) getAuthCredentials:(NSDictionary *)argsDict result:(FlutterResult)callback
+{
+    SFOAuthCredentials *creds = [SFUserAccountManager sharedInstance].currentUser.credentials;
+    result = creds;
+}
+
+- (void) getClientInfo:(NSDictionary *)argsDict result:(FlutterResult)callback
+{
+    SFOAuthCredentials *creds = [SFUserAccountManager sharedInstance].currentUser.credentials;
+    result = creds;
 }
 
 @end
