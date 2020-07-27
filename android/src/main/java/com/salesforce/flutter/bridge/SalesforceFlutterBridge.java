@@ -21,8 +21,25 @@
  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.salesforce.flutter.bridge;
 
-#import <Flutter/Flutter.h>
+import com.salesforce.flutter.ui.SalesforceFlutterActivity;
 
-@interface SfpluginPlugin : NSObject<FlutterPlugin>
-@end
+import io.flutter.plugin.common.MethodCall;
+import io.flutter.plugin.common.MethodChannel;
+
+/**
+ * Abstract super class for all Salesforce Flutter bridges
+ */
+public abstract class SalesforceFlutterBridge {
+
+    protected final SalesforceFlutterActivity currentActivity;
+
+    public SalesforceFlutterBridge(SalesforceFlutterActivity currentActivity) {
+        this.currentActivity = currentActivity;
+    }
+
+    public abstract void onMethodCall(MethodCall call, MethodChannel.Result result);
+
+    public abstract String getPrefix();
+}

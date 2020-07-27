@@ -1,5 +1,5 @@
-name: sfplugin
-description: A new flutter plugin project.
+name: salesforce
+description: Salesforce Plugin
 version: 0.0.1
 author:
 homepage:
@@ -19,10 +19,10 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.salesforce.flutter.sfplugin
-        pluginClass: SfpluginPlugin
+        package: com.salesforce.flutter
+        pluginClass: SalesforcePlugin
       ios:
-        pluginClass: SfpluginPlugin
+        pluginClass: SalesforcePlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

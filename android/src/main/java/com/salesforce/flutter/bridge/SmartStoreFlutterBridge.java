@@ -21,9 +21,9 @@
  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce.flutter.sfplugin.bridge;
+package com.salesforce.flutter.bridge;
 
-import com.salesforce.flutter.sfplugin.ui.SalesforceFlutterActivity;
+import com.salesforce.flutter.ui.SalesforceFlutterActivity;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;

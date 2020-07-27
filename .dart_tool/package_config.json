@@ -44,13 +44,13 @@
       "languageVersion": "2.9"
     },
     {
-      "name": "sfplugin",
+      "name": "salesforce",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     }
   ],
-  "generated": "2020-07-25T19:03:41.160939Z",
+  "generated": "2020-07-27T02:25:53.476076Z",
   "generator": "pub",
   "generatorVersion": "2.9.0-21.0.dev.flutter-20bf2fcf56"
 }

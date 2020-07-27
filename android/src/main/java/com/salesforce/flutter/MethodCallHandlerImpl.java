@@ -1,14 +1,14 @@
-package com.salesforce.flutter.sfplugin;
+package com.salesforce.flutter;
 
 import android.app.Activity;
 import android.content.Context;
 
-import com.salesforce.flutter.sfplugin.bridge.SalesforceFlutterBridge;
-import com.salesforce.flutter.sfplugin.bridge.SalesforceNetFlutterBridge;
-import com.salesforce.flutter.sfplugin.bridge.SalesforceOauthFlutterBridge;
-import com.salesforce.flutter.sfplugin.bridge.SmartStoreFlutterBridge;
-import com.salesforce.flutter.sfplugin.bridge.SmartSyncFlutterBridge;
-import com.salesforce.flutter.sfplugin.ui.SalesforceFlutterActivity;
+import com.salesforce.flutter.bridge.SalesforceFlutterBridge;
+import com.salesforce.flutter.bridge.SalesforceNetFlutterBridge;
+import com.salesforce.flutter.bridge.SalesforceOauthFlutterBridge;
+import com.salesforce.flutter.bridge.SmartStoreFlutterBridge;
+import com.salesforce.flutter.bridge.SmartSyncFlutterBridge;
+import com.salesforce.flutter.ui.SalesforceFlutterActivity;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;

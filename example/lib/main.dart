@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sfplugin/sfplugin.dart';
+import 'package:salesforce/salesforce.dart';
 
 class Contact {
   final String name;

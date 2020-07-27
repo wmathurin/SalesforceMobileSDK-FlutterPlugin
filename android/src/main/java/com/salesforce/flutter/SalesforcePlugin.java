@@ -21,7 +21,7 @@
  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce.flutter.sfplugin;
+package com.salesforce.flutter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,22 +31,22 @@ import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
+import io.flutter.plugin.common.PluginRegistry;
 
 /**
  * Salesforce flutter plugin
  */
-public class SfpluginPlugin implements FlutterPlugin, ActivityAware {
+public class SalesforcePlugin implements FlutterPlugin, ActivityAware {
 
-    private static final String CHANNEL_ID = "com.salesforce.flutter.Sfplugin";
+    private static final String CHANNEL_ID = "com.salesforce.flutter.SalesforcePlugin";
     private MethodChannel channel;
     private MethodCallHandlerImpl handler;
 
     /**
      * Plugin registration.
      */
-    public static void registerWith(Registrar registrar) {
-        final SfpluginPlugin plugin = new SfpluginPlugin();
+    public static void registerWith(PluginRegistry.Registrar registrar) {
+        final SalesforcePlugin plugin = new SalesforcePlugin();
         plugin.setupChannel(registrar.messenger(), registrar.context(), registrar.activity());
     }
 

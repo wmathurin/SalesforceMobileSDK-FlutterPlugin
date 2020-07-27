@@ -1,4 +1,4 @@
-group 'com.salesforce.flutter.sfplugin'
+group 'com.salesforce.flutter'
 version '1.0-SNAPSHOT'
 
 buildscript {

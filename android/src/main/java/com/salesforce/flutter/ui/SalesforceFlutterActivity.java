@@ -24,7 +24,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce.flutter.sfplugin.ui;
+package com.salesforce.flutter.ui;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -209,4 +209,6 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
         SmartSyncLogger.i(TAG, "logout called");
         SalesforceSDKManager.getInstance().logout(this);
     }
+
+
 }

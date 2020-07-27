@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 class SalesforcePlugin {
-  static const MethodChannel _channel = const MethodChannel('sfplugin');
+  static const MethodChannel _channel = const MethodChannel('com.salesforce.flutter.SalesforcePlugin');
 
   static String apiVersion = 'v48.0';
 

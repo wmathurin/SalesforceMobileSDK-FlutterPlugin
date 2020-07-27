@@ -22,13 +22,13 @@
  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SfpluginPlugin.h"
+#import "SalesforcePlugin.h"
 #import "SFOauthFlutterBridge.h"
 #import "SFNetFlutterBridge.h"
 #import "SFSmartStoreFlutterBridge.h"
 #import "SFSmartSyncFlutterBridge.h"
 
-@interface SfpluginPlugin ()
+@interface SalesforcePlugin ()
 
 @property(nonatomic, strong, readwrite) SFOauthFlutterBridge* oauthBridge;
 @property(nonatomic, strong, readwrite) SFNetFlutterBridge* networkBridge;
@@ -37,12 +37,12 @@
 
 @end
 
-@implementation SfpluginPlugin
+@implementation SalesforcePlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
     FlutterMethodChannel* channel = [FlutterMethodChannel
-                                     methodChannelWithName:@"sfplugin"
+                                     methodChannelWithName:@"com.salesforce.flutter.SalesforcePlugin"
                                      binaryMessenger:[registrar messenger]];
-    SfpluginPlugin* instance = [[SfpluginPlugin alloc] init];
+    SalesforcePlugin* instance = [[SalesforcePlugin alloc] init];
     [registrar addMethodCallDelegate:instance channel:channel];
 }
 

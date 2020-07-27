@@ -21,7 +21,7 @@
  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce.flutter.sfplugin.bridge;
+package com.salesforce.flutter.bridge;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -33,7 +33,7 @@ import com.salesforce.androidsdk.rest.RestClient;
 import com.salesforce.androidsdk.rest.RestRequest;
 import com.salesforce.androidsdk.rest.RestResponse;
 import com.salesforce.androidsdk.util.SalesforceSDKLogger;
-import com.salesforce.flutter.sfplugin.ui.SalesforceFlutterActivity;
+import com.salesforce.flutter.ui.SalesforceFlutterActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
