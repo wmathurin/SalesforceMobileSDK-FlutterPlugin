@@ -18,7 +18,7 @@ class SalesforcePlugin {
    * @param returnBinary When true response returned as {encodedBody:"base64-encoded-response", contentType:"content-type"}
   */
 
-  static Future<Map> sendRequest({String endPoint : '/services/data', String path, String method : 'GET', Map payload, Map headerParams, Map fileParams, bool returnBinary : false}) async {
+  static Future<Map> sendRequest({String endPoint : '/services/data', String path : '', String method : 'GET', Map payload, Map headerParams, Map fileParams, bool returnBinary : false}) async {
     try {
       final Object response = await _channel.invokeMethod(
           'network#sendRequest',

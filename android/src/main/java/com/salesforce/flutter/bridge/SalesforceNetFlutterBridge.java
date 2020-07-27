@@ -216,7 +216,7 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
     }
 
     private static RequestBody buildRequestBody(Map<String, Object> params, Map<String, Map<String, String>> fileParams) throws URISyntaxException {
-        if (fileParams.isEmpty()) {
+        if (fileParams == null || fileParams.isEmpty()) {
             return RequestBody.create(RestRequest.MEDIA_TYPE_JSON, new JSONObject(params).toString());
         } else {
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
