@@ -39,7 +39,9 @@
         [self getAuthCredentials:result:result];
     } else if ([@"oauth#getClientInfo" isEqualToString:call.method]) {
        [self getClientInfo:result:result];
-   } else {
+    } else if ([@"oauth#logoutCurrentUser" isEqualToString:call.method]) {
+       [self logoutCurrentUser:result:result];
+    } else {
         result(FlutterMethodNotImplemented);
     }
 }
@@ -54,6 +56,15 @@
 {
     SFOAuthCredentials *creds = [SFUserAccountManager sharedInstance].currentUser.credentials;
     result = creds;
+}
+
+- (void) logoutCurrentUser:(NSDictionary *)argsDict result:(FlutterResult)callback
+{
+    [SalesforceSDKManager sharedManager].postLogoutAction = ^{
+       [weakSelf handleSdkManagerLogout];
+    };
+
+    result = @"success";
 }
 
 @end

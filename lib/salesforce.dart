@@ -229,4 +229,14 @@ class SalesforcePlugin {
     }
   }
 
+  static Future<void> logoutCurrentUser() async {
+    try {
+      await _channel.invokeMethod(
+          'oauth#logoutCurrentUser'
+      );
+    } on Exception catch (e){
+      throw new Exception('Salesforce Error: ${e.toString()}');
+    }
+  }
+
 }

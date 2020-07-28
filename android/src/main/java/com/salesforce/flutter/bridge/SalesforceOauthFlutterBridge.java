@@ -23,6 +23,8 @@
  */
 package com.salesforce.flutter.bridge;
 
+import com.salesforce.androidsdk.accounts.UserAccountManager;
+import com.salesforce.androidsdk.app.SalesforceSDKManager;
 import com.salesforce.androidsdk.rest.RestClient;
 import com.salesforce.androidsdk.util.SalesforceSDKLogger;
 import com.salesforce.flutter.ui.SalesforceFlutterActivity;
@@ -39,7 +41,8 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
 
     enum Method {
         getAuthCredentials,
-        getClientInfo
+        getClientInfo,
+        logoutCurrentUser
     }
 
     private static final String TAG = "SalesforceOauthFlutterBridge";
@@ -62,6 +65,9 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
                 break;
             case getClientInfo:
                 getClientInfo(result);
+                break;
+            case logoutCurrentUser:
+                logoutCurrentUser(result);
                 break;
             default:
                 result.notImplemented();
@@ -94,7 +100,20 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
                 callback.error("No restClient", null, null);
                 return;
             }
+
             callback.success(restClient.getClientInfo().toString());
+
+        } catch (Exception exception) {
+            returnError("sendRequest failed", exception, callback);
+        }
+    }
+
+    protected void logoutCurrentUser(final MethodChannel.Result callback) {
+        try {
+            SalesforceSDKManager.getInstance().logout(currentActivity);
+            callback.success("success");
+
+            UserAccountManager.getInstance().getCurrentUser().lo
 
         } catch (Exception exception) {
             returnError("sendRequest failed", exception, callback);
