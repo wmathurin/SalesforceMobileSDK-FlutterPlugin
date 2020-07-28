@@ -23,7 +23,6 @@
  */
 package com.salesforce.flutter.bridge;
 
-import com.salesforce.androidsdk.accounts.UserAccountManager;
 import com.salesforce.androidsdk.app.SalesforceSDKManager;
 import com.salesforce.androidsdk.rest.RestClient;
 import com.salesforce.androidsdk.util.SalesforceSDKLogger;
@@ -112,8 +111,6 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
         try {
             SalesforceSDKManager.getInstance().logout(currentActivity);
             callback.success("success");
-
-            UserAccountManager.getInstance().getCurrentUser().lo
 
         } catch (Exception exception) {
             returnError("sendRequest failed", exception, callback);
