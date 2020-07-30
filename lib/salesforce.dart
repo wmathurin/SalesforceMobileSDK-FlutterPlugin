@@ -167,7 +167,7 @@ class SalesforcePlugin {
    * @param callback function to which response will be passed
    * @param [error=null] function called in case of error
   */
-  static Future<Map> queryMore(String url) => sendRequest(endPoint: '',  path: url.split('/https:\/\/[^/]*(.*)/')[1]);
+  static Future<Map> queryMore(String url) => sendRequest(endPoint: '',  path: url.split('/https:\/\/[^/]*(.*)/').last);
 
   /*
    * Executes the specified SOSL search.
