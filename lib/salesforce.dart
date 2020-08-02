@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 class SalesforcePlugin {
   static const MethodChannel _channel = const MethodChannel('com.salesforce.flutter.SalesforcePlugin');
 
-  static String apiVersion = 'v48.0';
+  static String apiVersion = 'v49.0';
 
   /*
    * Network methods
