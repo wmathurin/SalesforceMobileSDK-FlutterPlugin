@@ -35,7 +35,8 @@ class SalesforcePlugin {
             'fileParams': fileParams,
             'returnBinary': returnBinary}
       );
-      return response is Map ? response : json.decode(response);
+      final responseBody = response is Map ? response : json.decode(response);
+      return responseBody is List ? Map.fromIterable(responseBody) : responseBody;
     } on Exception catch (e){
       throw new Exception('Salesforce Error: ${e.toString()}');
     }
