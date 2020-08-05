@@ -203,6 +203,7 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
 
     @Override
     public void onUserSwitched() {
+        delegate.onResume(true);
     }
 
     public void logout() {

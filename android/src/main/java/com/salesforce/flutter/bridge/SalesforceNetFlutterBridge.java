@@ -118,7 +118,7 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
                 public void onSuccess(RestRequest request, final RestResponse response) {
                     try {
                         final String resp = response.toString();
-                        uiThreadHandler.post(new Runnable() {
+                        currentActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 //SalesforceSDKLogger.d(TAG, "response (SalesforceNetFutterBridge): " + resp);
@@ -152,10 +152,14 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
                         returnError("sendRequest failed", e, callback);
                     }
                 }
-
                 @Override
-                public void onError(Exception exception) {
-                    returnError("sendRequest failed", exception, callback);
+                public void onError(final Exception exception) {
+                    currentActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            returnError("sendRequest failed", exception, callback);
+                        }
+                    });
                 }
             });
         } catch (Exception exception) {
