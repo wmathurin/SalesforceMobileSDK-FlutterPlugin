@@ -132,7 +132,6 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
                                 // Binary response
                                 else if (returnBinary) {
                                     try {
-
                                         JSONObject result = new JSONObject();
                                         result.put(CONTENT_TYPE, response.getContentType());
                                         result.put(ENCODED_BODY, Base64.encodeToString(response.asBytes(), Base64.DEFAULT));

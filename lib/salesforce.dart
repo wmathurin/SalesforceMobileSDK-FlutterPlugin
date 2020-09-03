@@ -17,6 +17,16 @@ class SalesforcePlugin {
   static String _apiVersion = 'v49.0';
 
   /*
+   * Set apiVersion to be used
+  */
+  setApiVersion(String apiVersion) => _apiVersion = apiVersion;
+
+  /*
+   * Return apiVersion used
+  */
+  String get getApiVersion => _apiVersion;
+
+  /*
    * Network methods
    */
 
