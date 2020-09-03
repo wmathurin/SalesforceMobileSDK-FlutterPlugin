@@ -19,12 +19,12 @@ class SalesforcePlugin {
   /*
    * Set apiVersion to be used
   */
-  setApiVersion(String apiVersion) => _apiVersion = apiVersion;
+  void setApiVersion(String apiVersion) => _apiVersion = apiVersion;
 
   /*
    * Return apiVersion used
   */
-  String get getApiVersion => _apiVersion;
+  static String get getApiVersion => _apiVersion;
 
   /*
    * Network methods
