@@ -59,12 +59,8 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
         this.delegate = new SalesforceActivityDelegate(this);
     }
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SalesforceSDKManager.initNative(getApplicationContext(), SalesforceFlutterActivity.class);
-
         MobileSyncLogger.i(TAG, "onCreate called");
         super.onCreate(savedInstanceState);
 
@@ -212,5 +208,4 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
         MobileSyncLogger.i(TAG, "logout called");
         SalesforceSDKManager.getInstance().logout(this);
     }
-
 }
