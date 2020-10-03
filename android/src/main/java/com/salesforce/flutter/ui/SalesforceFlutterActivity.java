@@ -31,15 +31,14 @@ import android.view.KeyEvent;
 import android.widget.Toast;
 
 import com.salesforce.androidsdk.app.SalesforceSDKManager;
+import com.salesforce.androidsdk.mobilesync.util.MobileSyncLogger;
 import com.salesforce.androidsdk.rest.ClientManager;
 import com.salesforce.androidsdk.rest.ClientManager.RestClientCallback;
 import com.salesforce.androidsdk.rest.RestClient;
 import com.salesforce.androidsdk.ui.SalesforceActivityDelegate;
 import com.salesforce.androidsdk.ui.SalesforceActivityInterface;
 
-import io.flutter.app.FlutterActivity;
-
-import com.salesforce.androidsdk.smartsync.util.SmartSyncLogger;
+import io.flutter.embedding.android.FlutterActivity;
 
 /**
  * Super class for all Salesforce flutter activities.
@@ -57,28 +56,16 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
 
     protected SalesforceFlutterActivity() {
         super();
-        delegate = new SalesforceActivityDelegate(this);
+        this.delegate = new SalesforceActivityDelegate(this);
     }
 
-    /**
-     * @return true if you want login to happen as soon as activity is loaded
-     *         false if you want do login at a later point
-     */
-    public boolean shouldAuthenticate() {
-        return true;
-    }
 
-    /**
-     * Called if shouldAuthenticate() returned true but device is offline
-     */
-    public void onErrorAuthenticateOffline() {
-        Toast t = Toast.makeText(this, "Should authenticate but is offline" /* XXX move to resource*/, Toast.LENGTH_LONG);
-        t.show();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SmartSyncLogger.i(TAG, "onCreate called");
+        SalesforceSDKManager.initNative(getApplicationContext(), SalesforceFlutterActivity.class);
+
+        MobileSyncLogger.i(TAG, "onCreate called");
         super.onCreate(savedInstanceState);
 
         // Get clientManager
@@ -117,33 +104,10 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
         }
     }
 
-    /**
-     * Called when resuming activity and user is not authenticated
-     */
-    private void onResumeNotLoggedIn() {
-
-        // Need to be authenticated
-        if (shouldAuthenticate()) {
-
-            // Online
-            if (SalesforceSDKManager.getInstance().hasNetwork()) {
-                SmartSyncLogger.i(TAG, "onResumeNotLoggedIn - should authenticate/online - authenticating");
-                login();
-            }
-
-            // Offline
-            else {
-                SmartSyncLogger.w(TAG, "onResumeNotLoggedIn - should authenticate/offline - can not proceed");
-                onErrorAuthenticateOffline();
-            }
-        }
-
-        // Does not need to be authenticated
-        else {
-            SmartSyncLogger.i(TAG, "onResumeNotLoggedIn - should not authenticate");
-        }
+    @Override
+    public void onUserInteraction() {
+        delegate.onUserInteraction();
     }
-
 
     @Override
     public void onPause() {
@@ -158,25 +122,72 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
     }
 
     @Override
-    public void onUserInteraction() {
-        delegate.onUserInteraction();
-    }
-
-    @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         return delegate.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
+    @Override
+    public void onLogoutComplete() {
+    }
+
+    @Override
+    public void onUserSwitched() {
+        delegate.onResume(true);
+    }
+
+    /**
+     * @return true if you want login to happen as soon as activity is loaded
+     *         false if you want do login at a later point
+     */
+    public boolean shouldAuthenticate() {
+        return true;
+    }
+
+    /**
+     * Called if shouldAuthenticate() returned true but device is offline
+     */
+    public void onErrorAuthenticateOffline() {
+        Toast t = Toast.makeText(this, "Should authenticate but is offline" /* XXX move to resource*/, Toast.LENGTH_LONG);
+        t.show();
+    }
+
+    /**
+     * Called when resuming activity and user is not authenticated
+     */
+    private void onResumeNotLoggedIn() {
+
+        // Need to be authenticated
+        if (shouldAuthenticate()) {
+
+            // Online
+            if (SalesforceSDKManager.getInstance().hasNetwork()) {
+                MobileSyncLogger.i(TAG, "onResumeNotLoggedIn - should authenticate/online - authenticating");
+                login();
+            }
+
+            // Offline
+            else {
+                MobileSyncLogger.w(TAG, "onResumeNotLoggedIn - should authenticate/offline - can not proceed");
+                onErrorAuthenticateOffline();
+            }
+        }
+
+        // Does not need to be authenticated
+        else {
+            MobileSyncLogger.i(TAG, "onResumeNotLoggedIn - should not authenticate");
+        }
+    }
+
     protected void login() {
-        SmartSyncLogger.i(TAG, "login called");
+        MobileSyncLogger.i(TAG, "login called");
         clientManager.getRestClient(this, new RestClientCallback() {
             @Override
             public void authenticatedRestClient(RestClient client) {
                 if (client == null) {
-                    SmartSyncLogger.i(TAG, "login callback triggered with null client");
+                    MobileSyncLogger.i(TAG, "login callback triggered with null client");
                     logout();
                 } else {
-                    SmartSyncLogger.i(TAG, "login callback triggered with actual client");
+                    MobileSyncLogger.i(TAG, "login callback triggered with actual client");
                     recreate();
                 }
             }
@@ -197,19 +208,9 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
                 SalesforceSDKManager.getInstance().shouldLogoutWhenTokenRevoked());
     }
 
-    @Override
-    public void onLogoutComplete() {
-    }
-
-    @Override
-    public void onUserSwitched() {
-        delegate.onResume(true);
-    }
-
     public void logout() {
-        SmartSyncLogger.i(TAG, "logout called");
+        MobileSyncLogger.i(TAG, "logout called");
         SalesforceSDKManager.getInstance().logout(this);
     }
-
 
 }

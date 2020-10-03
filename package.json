@@ -1,6 +1,6 @@
 {
-    "name": "Example",
-    "version": "6.1.0",
+    "name": "SalesforceMobileSDK",
+    "version": "9.0.0",
     "private": true,
     "sdkDependencies": {
         "SalesforceMobileSDK-Android": "https://github.com/forcedotcom/SalesforceMobileSDK-Android.git#dev",
