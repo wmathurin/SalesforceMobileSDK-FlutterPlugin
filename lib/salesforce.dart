@@ -241,4 +241,7 @@ class SalesforcePlugin {
     await SalesforcePlugin.instance._channel.invokeMethod('oauth#logoutCurrentUser');
   }
 
+  static Future<void> registerFCM(String registrationId) async {
+    await SalesforcePlugin.instance._channel.invokeMethod('oauth#registerFCM', <String, dynamic>{'registrationId': registrationId});
+  }
 }
