@@ -23,10 +23,17 @@
  */
 package com.salesforce.flutter.bridge;
 
+import android.content.Context;
+
+import com.salesforce.androidsdk.accounts.UserAccount;
+import com.salesforce.androidsdk.accounts.UserAccountManager;
 import com.salesforce.androidsdk.app.SalesforceSDKManager;
+import com.salesforce.androidsdk.push.PushMessaging;
 import com.salesforce.androidsdk.rest.RestClient;
 import com.salesforce.androidsdk.util.SalesforceSDKLogger;
 import com.salesforce.flutter.ui.SalesforceFlutterActivity;
+
+import java.util.Map;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -41,7 +48,8 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
     enum Method {
         getAuthCredentials,
         getClientInfo,
-        logoutCurrentUser
+        logoutCurrentUser,
+        registerFCM
     }
 
     private static final String TAG = "SalesforceOauthFlutterBridge";
@@ -68,6 +76,9 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
             case logoutCurrentUser:
                 logoutCurrentUser(result);
                 break;
+            case registerFCM:
+                registerFCM((Map<String, Object>) call.arguments, result);
+                break;    
             default:
                 result.notImplemented();
         }
@@ -111,7 +122,6 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
         try {
             SalesforceSDKManager.getInstance().logout(currentActivity);
             callback.success("success");
-
         } catch (Exception exception) {
             returnError("sendRequest failed", exception, callback);
         }
@@ -129,5 +139,17 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
     private void returnError(String message, Exception exception, MethodChannel.Result callback) {
         SalesforceSDKLogger.e(TAG, message, exception);
         callback.error(exception.getClass().getName(), exception.getMessage(), exception);
+    }
+
+    private void registerFCM(Map<String, Object> args, final MethodChannel.Result callback){
+        try {
+            final Context context = SalesforceSDKManager.getInstance().getAppContext();
+            final UserAccount currentUser = SalesforceSDKManager.getInstance().getUserAccountManager().getCurrentUser();
+            PushMessaging.setRegistrationId(context, (String) args.get("registrationId"), currentUser);
+            PushMessaging.register(context, currentUser);
+            callback.success("success");
+        } catch (Exception exception) {
+            returnError("registerFCM failed", exception, callback);
+        }
     }
 }

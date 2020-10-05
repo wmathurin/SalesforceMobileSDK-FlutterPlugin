@@ -92,14 +92,14 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
         Method method = Method.valueOf(call.method.substring(PREFIX.length() + 1));
         switch(method) {
             case sendRequest:
-                sendRequest((Map<String, Object>) call.arguments, result); break;
+                sendRequest((Map<String, Object>) call.arguments, result); 
+                break;
             default:
                 result.notImplemented();
         }
     }
 
     protected void sendRequest(Map<String, Object> args, final MethodChannel.Result callback) {
-
         try {
             // Getting restClient
             RestClient restClient = getRestClient();
