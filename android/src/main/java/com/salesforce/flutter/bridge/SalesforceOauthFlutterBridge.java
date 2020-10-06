@@ -25,8 +25,11 @@ package com.salesforce.flutter.bridge;
 
 import android.content.Context;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.salesforce.androidsdk.accounts.UserAccount;
 import com.salesforce.androidsdk.app.SalesforceSDKManager;
+import com.salesforce.androidsdk.config.BootConfig;
 import com.salesforce.androidsdk.push.PushMessaging;
 import com.salesforce.androidsdk.rest.RestClient;
 import com.salesforce.androidsdk.util.SalesforceSDKLogger;
@@ -144,9 +147,8 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
         try {
             final Context context = SalesforceSDKManager.getInstance().getAppContext();
             final UserAccount currentUser = SalesforceSDKManager.getInstance().getUserAccountManager().getCurrentUser();
-            PushMessaging.initializeFirebaseIfNeeded(context);
             PushMessaging.setRegistrationId(context, (String) args.get("registrationId"), currentUser);
-            PushMessaging.register(context, currentUser);
+            PushMessaging.registerSFDCPush(context, currentUser);
             callback.success("success");
         } catch (Exception exception) {
             returnError("registerFCM failed", exception, callback);
