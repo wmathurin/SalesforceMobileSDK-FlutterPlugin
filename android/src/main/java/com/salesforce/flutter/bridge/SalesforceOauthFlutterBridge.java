@@ -122,16 +122,7 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
 
     protected void logoutCurrentUser(final MethodChannel.Result callback) {
         try {
-            final Context context = SalesforceSDKManager.getInstance().getAppContext();
-            final UserAccount currentUser = SalesforceSDKManager.getInstance().getUserAccountManager().getCurrentUser();
-
-            String registrationId = PushMessaging.getRegistrationId(context, currentUser);
-            if (registrationId != null){
-                PushMessaging.unregisterSFDCPush(context, currentUser);
-            }
-
             SalesforceSDKManager.getInstance().logout(currentActivity);
-
             callback.success("success");
         } catch (Exception exception) {
             returnError("sendRequest failed", exception, callback);
@@ -156,13 +147,8 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
         try {
             final Context context = SalesforceSDKManager.getInstance().getAppContext();
             final UserAccount currentUser = SalesforceSDKManager.getInstance().getUserAccountManager().getCurrentUser();
-
-            // Store the new token.
             PushMessaging.setRegistrationId(context, (String) args.get("registrationId"), currentUser);
-
-            // Send it to SFDC.
-            PushMessaging.registerSFDCPush(context, currentUser);
-
+            PushMessaging.register(context, currentUser);
             callback.success("success");
         } catch (Exception exception) {
             returnError("registerFCM failed", exception, callback);
