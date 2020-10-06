@@ -26,7 +26,6 @@ package com.salesforce.flutter.bridge;
 import android.content.Context;
 
 import com.salesforce.androidsdk.accounts.UserAccount;
-import com.salesforce.androidsdk.accounts.UserAccountManager;
 import com.salesforce.androidsdk.app.SalesforceSDKManager;
 import com.salesforce.androidsdk.push.PushMessaging;
 import com.salesforce.androidsdk.rest.RestClient;
@@ -145,6 +144,7 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
         try {
             final Context context = SalesforceSDKManager.getInstance().getAppContext();
             final UserAccount currentUser = SalesforceSDKManager.getInstance().getUserAccountManager().getCurrentUser();
+            PushMessaging.initializeFirebaseIfNeeded(context);
             PushMessaging.setRegistrationId(context, (String) args.get("registrationId"), currentUser);
             PushMessaging.register(context, currentUser);
             callback.success("success");
