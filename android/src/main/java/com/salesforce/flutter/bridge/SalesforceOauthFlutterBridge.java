@@ -50,8 +50,7 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
     enum Method {
         getAuthCredentials,
         getClientInfo,
-        logoutCurrentUser,
-        registerFCM
+        logoutCurrentUser
     }
 
     private static final String TAG = "SalesforceOauthFlutterBridge";
@@ -78,9 +77,6 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
             case logoutCurrentUser:
                 logoutCurrentUser(result);
                 break;
-            case registerFCM:
-                registerFCM((Map<String, Object>) call.arguments, result);
-                break;    
             default:
                 result.notImplemented();
         }
@@ -141,17 +137,5 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
     private void returnError(String message, Exception exception, MethodChannel.Result callback) {
         SalesforceSDKLogger.e(TAG, message, exception);
         callback.error(exception.getClass().getName(), exception.getMessage(), exception);
-    }
-
-    private void registerFCM(Map<String, Object> args, final MethodChannel.Result callback){
-        try {
-            final Context context = SalesforceSDKManager.getInstance().getAppContext();
-            final UserAccount currentUser = SalesforceSDKManager.getInstance().getUserAccountManager().getCurrentUser();
-            PushMessaging.setRegistrationId(context, (String) args.get("registrationId"), currentUser);
-            PushMessaging.register(context, currentUser);
-            callback.success("success");
-        } catch (Exception exception) {
-            returnError("registerFCM failed", exception, callback);
-        }
     }
 }

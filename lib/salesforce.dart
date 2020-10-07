@@ -241,8 +241,16 @@ class SalesforcePlugin {
     await SalesforcePlugin.instance._channel.invokeMethod('oauth#logoutCurrentUser');
   }
 
-  static Future<void> registerFCM(String registrationId) async {
-    await SalesforcePlugin.instance._channel.invokeMethod('oauth#registerFCM', <String, dynamic>{'registrationId': registrationId});
+  static Future<Map> registerFCM(String token, String communityId, String packageName) async {
+    final Map fields = {
+      "ConnectionToken": token,
+      "ServiceType": "androidGcm",
+      "ApplicationBundle": packageName,
+    };
+    if (communityId != null){
+      fields["NetworkId"] = communityId;
+    }
+    return await SalesforcePlugin.create("MobilePushServiceDevice", fields);
   }
 
 }
