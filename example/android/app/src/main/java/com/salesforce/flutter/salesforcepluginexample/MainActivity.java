@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
-import com.salesforce.androidsdk.app.SalesforceSDKManager;
+import com.salesforce.androidsdk.mobilesync.app.MobileSyncSDKManager;
 import com.salesforce.flutter.ui.SalesforceFlutterActivity;
 
 import io.flutter.embedding.engine.FlutterEngine;
@@ -19,7 +19,7 @@ public class MainActivity extends SalesforceFlutterActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SalesforceSDKManager.initNative(getApplicationContext(), SalesforceFlutterActivity.class);
+        MobileSyncSDKManager.initNative(getApplicationContext(), SalesforceFlutterActivity.class);
         super.onCreate(savedInstanceState);
     }
 }
