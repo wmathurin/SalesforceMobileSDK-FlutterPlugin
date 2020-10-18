@@ -241,7 +241,7 @@ class SalesforcePlugin {
     await SalesforcePlugin.instance._channel.invokeMethod('oauth#logoutCurrentUser');
   }
 
-  static Future<Map> registerPushNotification(String token, String communityId, String packageName) async {
+  static Future<Map> registerForNotifications(String token, String communityId, String packageName) async {
     final Map fields = {
       "ConnectionToken": token,
       "ServiceType": "androidGcm",

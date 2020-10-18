@@ -23,19 +23,10 @@
  */
 package com.salesforce.flutter.bridge;
 
-import android.content.Context;
-
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.salesforce.androidsdk.accounts.UserAccount;
 import com.salesforce.androidsdk.app.SalesforceSDKManager;
-import com.salesforce.androidsdk.config.BootConfig;
-import com.salesforce.androidsdk.push.PushMessaging;
 import com.salesforce.androidsdk.rest.RestClient;
 import com.salesforce.androidsdk.util.SalesforceSDKLogger;
 import com.salesforce.flutter.ui.SalesforceFlutterActivity;
-
-import java.util.Map;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
