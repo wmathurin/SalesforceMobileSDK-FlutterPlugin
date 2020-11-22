@@ -4,14 +4,21 @@ import 'package:flutter/services.dart';
 
 class SalesforcePlugin {
 
-  static SalesforcePlugin _instance;
+  factory SalesforcePlugin() {
+    if (_singleton == null) {
+      _singleton = SalesforcePlugin._(const MethodChannel('com.salesforce.flutter.SalesforcePlugin'));
+    }
+    return _singleton!;
+  }
 
   SalesforcePlugin._(MethodChannel channel) : _channel = channel;
 
-  static SalesforcePlugin get instance {
-    _instance ??= SalesforcePlugin._(const MethodChannel('com.salesforce.flutter.SalesforcePlugin'));
-    return _instance;
-  }
+  static SalesforcePlugin? _singleton;
+
+  static SalesforcePlugin get _platform => SalesforcePlugin.instance;
+
+  static SalesforcePlugin _instance = SalesforcePlugin();
+  static SalesforcePlugin get instance => _instance;
 
   final MethodChannel _channel;
   static String _apiVersion = 'v50.0';
@@ -41,8 +48,8 @@ class SalesforcePlugin {
    * @param returnBinary When true response returned as {encodedBody:"base64-encoded-response", contentType:"content-type"}
   */
 
-  static Future<Map> sendRequest({String endPoint : '/services/data', String path : '', String method : 'GET', Map payload, Map headerParams, Map fileParams, bool returnBinary : false}) async {
-    final Object response = await SalesforcePlugin.instance._channel.invokeMethod(
+  static Future<Map> sendRequest({String endPoint : '/services/data', String path : '', String method : 'GET', Map? payload, Map? headerParams, Map? fileParams, bool returnBinary : false}) async {
+    final Object response = await _platform._channel.invokeMethod(
         'network#sendRequest',
         <String, dynamic>{
           'endPoint': endPoint,
@@ -53,7 +60,7 @@ class SalesforcePlugin {
           'fileParams': fileParams,
           'returnBinary': returnBinary}
     );
-    final responseBody = response is Map ? response : json.decode(response);
+    final responseBody = response is Map ? response : json.decode(response.toString());
     return responseBody is List ? Map.fromIterable(responseBody) : responseBody;
   }
 
@@ -142,7 +149,7 @@ class SalesforcePlugin {
    * @param callback function to which response will be passed
    * @param [error=null] function called in case of error
   */
-  static Future<Map> upsert(String objtype, String externalIdField, String externalId, Map fields) => sendRequest(path: '/$_apiVersion/sobjects/$objtype/$externalIdField/${externalId ?? ''}', method: externalId != null ? "PATCH" : "POST", payload: fields);
+  static Future<Map> upsert(String objtype, String externalIdField, String? externalId, Map fields) => sendRequest(path: '/$_apiVersion/sobjects/$objtype/$externalIdField/${externalId ?? ''}', method: externalId != null ? "PATCH" : "POST", payload: fields);
 
   /*
    * Updates field values on a record of the given type.
@@ -224,25 +231,25 @@ class SalesforcePlugin {
    *   community url
    */
   static Future<Map> getAuthCredentials() async {
-    final Object response = await SalesforcePlugin.instance._channel.invokeMethod(
+    final Object? response = await _platform._channel.invokeMethod(
         'oauth#getAuthCredentials'
     );
-    return response is Map ? response : json.decode(response);
+    return response is Map ? response : json.decode(response?.toString() ?? '');
   }
 
   static Future<Object> getClientInfo() async {
-    final Object response = await SalesforcePlugin.instance._channel.invokeMethod(
+    final Object response = await _platform._channel.invokeMethod(
         'oauth#getClientInfo'
     );
     return response;
   }
 
   static Future<void> logoutCurrentUser() async {
-    await SalesforcePlugin.instance._channel.invokeMethod('oauth#logoutCurrentUser');
+    await _platform._channel.invokeMethod('oauth#logoutCurrentUser');
   }
 
-  static Future<Map> registerForNotifications(String token, String communityId, String packageName) async {
-    final Map fields = {
+  static Future<Map> registerForNotifications(String token, String? communityId, String packageName) async {
+    final Map<String, dynamic> fields = {
       "ConnectionToken": token,
       "ServiceType": "androidGcm",
       "ApplicationBundle": packageName,
