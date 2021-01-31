@@ -8,12 +8,12 @@ class SalesforcePlugin {
     if (_singleton == null) {
       _singleton = SalesforcePlugin._(const MethodChannel('com.salesforce.flutter.SalesforcePlugin'));
     }
-    return _singleton!;
+    return _singleton;
   }
 
   SalesforcePlugin._(MethodChannel channel) : _channel = channel;
 
-  static SalesforcePlugin? _singleton;
+  static SalesforcePlugin _singleton;
 
   static SalesforcePlugin get _platform => SalesforcePlugin.instance;
 
@@ -48,7 +48,7 @@ class SalesforcePlugin {
    * @param returnBinary When true response returned as {encodedBody:"base64-encoded-response", contentType:"content-type"}
   */
 
-  static Future<Map> sendRequest({String endPoint : '/services/data', String path : '', String method : 'GET', Map? payload, Map? headerParams, Map? fileParams, bool returnBinary : false}) async {
+  static Future<Map> sendRequest({String endPoint : '/services/data', String path : '', String method : 'GET', Map payload, Map headerParams, Map fileParams, bool returnBinary : false}) async {
     final Object response = await _platform._channel.invokeMethod(
         'network#sendRequest',
         <String, dynamic>{
@@ -149,7 +149,7 @@ class SalesforcePlugin {
    * @param callback function to which response will be passed
    * @param [error=null] function called in case of error
   */
-  static Future<Map> upsert(String objtype, String externalIdField, String? externalId, Map fields) => sendRequest(path: '/$_apiVersion/sobjects/$objtype/$externalIdField/${externalId ?? ''}', method: externalId != null ? "PATCH" : "POST", payload: fields);
+  static Future<Map> upsert(String objtype, String externalIdField, String externalId, Map fields) => sendRequest(path: '/$_apiVersion/sobjects/$objtype/$externalIdField/${externalId ?? ''}', method: externalId != null ? "PATCH" : "POST", payload: fields);
 
   /*
    * Updates field values on a record of the given type.
@@ -231,7 +231,7 @@ class SalesforcePlugin {
    *   community url
    */
   static Future<Map> getAuthCredentials() async {
-    final Object? response = await _platform._channel.invokeMethod(
+    final Object response = await _platform._channel.invokeMethod(
         'oauth#getAuthCredentials'
     );
     return response is Map ? response : json.decode(response?.toString() ?? '');
@@ -248,7 +248,7 @@ class SalesforcePlugin {
     await _platform._channel.invokeMethod('oauth#logoutCurrentUser');
   }
 
-  static Future<Map> registerForNotifications(String token, String? communityId, String packageName) async {
+  static Future<Map> registerForNotifications(String token, String communityId, String packageName) async {
     final Map<String, dynamic> fields = {
       "ConnectionToken": token,
       "ServiceType": "androidGcm",
