@@ -21,7 +21,7 @@ class SalesforcePlugin {
   static SalesforcePlugin get instance => _instance;
 
   final MethodChannel _channel;
-  static String _apiVersion = 'v50.0';
+  static String _apiVersion = 'v51.0';
 
   /*
    * Set apiVersion to be used
