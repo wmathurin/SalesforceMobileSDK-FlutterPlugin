@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:salesforce/salesforce.dart';
 
 class Contact {
-  final String name;
-  final String email;
+  final String? name;
+  final String? email;
 
   const Contact({this.name, this.email});
 }
@@ -12,10 +12,10 @@ class ContactListItem extends ListTile {
 
   ContactListItem(Contact contact) :
         super(
-          title : new Text(contact.name),
-          subtitle: new Text(contact.email),
+          title : new Text(contact.name!),
+          subtitle: new Text(contact.email!),
           leading: new CircleAvatar(
-              child: new Text(contact.name[0])
+              child: new Text(contact.name![0])
           )
       );
 
@@ -23,7 +23,7 @@ class ContactListItem extends ListTile {
 
 class ContactList extends StatelessWidget {
 
-  final List<Contact> contacts;
+  final List<Contact>? contacts;
 
   ContactList(this.contacts);
 
@@ -31,15 +31,15 @@ class ContactList extends StatelessWidget {
   Widget build(BuildContext context) {
     return new ListView.builder(
         padding: new EdgeInsets.symmetric(vertical: 8.0),
-        itemBuilder: (BuildContext context, int index) => new ContactListItem(contacts[index]),
-        itemCount: contacts.length
+        itemBuilder: (BuildContext context, int index) => new ContactListItem(contacts![index]),
+        itemCount: contacts!.length
     );
   }
 
 }
 
 class ContactsPageState extends State<ContactsPage> {
-  List<Contact> contacts;
+  List<Contact>? contacts;
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class ContactsPageState extends State<ContactsPage> {
 
     try {
       //Query test
-      Map response = await SalesforcePlugin.query("SELECT Id, Name, Email FROM Contact LIMIT 10000");
+      Map response = await (SalesforcePlugin.query("SELECT Id, Name, Email FROM Contact LIMIT 10000") as Future<Map<dynamic, dynamic>>);
       final List<dynamic> records = response['records'] ?? [];
       final List<Contact> contacts = records.map((record) => new Contact(name: record["Name"] ?? "", email: record["Email"]  ?? "")).toList();
       print('results: ${contacts.length}');
@@ -72,7 +72,7 @@ class ContactsPageState extends State<ContactsPage> {
           title: new Text("Contacts"),
           actions: [
             IconButton(
-              icon: Text("${this.contacts.length}"),
+              icon: Text("${this.contacts!.length}"),
               onPressed: null,
             ),
           ],
