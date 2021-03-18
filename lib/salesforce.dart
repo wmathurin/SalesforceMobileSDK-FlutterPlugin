@@ -149,7 +149,7 @@ class SalesforcePlugin {
    * @param callback function to which response will be passed
    * @param [error=null] function called in case of error
   */
-  static Future<Map> upsert(String objtype, String externalIdField, String externalId, Map fields) => sendRequest(path: '/$_apiVersion/sobjects/$objtype/$externalIdField/${externalId ?? ''}', method: externalId != null ? "PATCH" : "POST", payload: fields);
+  static Future<Map> upsert(String objtype, String externalIdField, String? externalId, Map fields) => sendRequest(path: '/$_apiVersion/sobjects/$objtype/$externalIdField/${externalId ?? ''}', method: externalId != null ? "PATCH" : "POST", payload: fields);
 
   /*
    * Updates field values on a record of the given type.
@@ -231,10 +231,10 @@ class SalesforcePlugin {
    *   community url
    */
   static Future<Map> getAuthCredentials() async {
-    final Object response = await _platform._channel.invokeMethod(
+    final Object? response = await _platform._channel.invokeMethod(
         'oauth#getAuthCredentials'
     );
-    return response is Map ? response : json.decode(response.toString() ?? '');
+    return response is Map ? response : json.decode(response?.toString() ?? '');
   }
 
   static Future<Object> getClientInfo() async {
