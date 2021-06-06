@@ -1,27 +1,18 @@
-package com.salesforce.flutter.salesforcepluginexample;
+package com.salesforce.flutter.salesforcepluginexample
 
-import android.os.Bundle;
+import android.os.Bundle
+import com.salesforce.androidsdk.app.SalesforceSDKManager
+import com.salesforce.flutter.ui.SalesforceFlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugins.GeneratedPluginRegistrant
 
-import androidx.annotation.NonNull;
-
-import com.salesforce.androidsdk.mobilesync.app.MobileSyncSDKManager;
-import com.salesforce.flutter.ui.SalesforceFlutterActivity;
-
-import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.plugins.GeneratedPluginRegistrant;
-
-public class MainActivity extends SalesforceFlutterActivity {
-
-    @Override
-    public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
-        GeneratedPluginRegistrant.registerWith(flutterEngine);
+class MainActivity : SalesforceFlutterActivity() {
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        GeneratedPluginRegistrant.registerWith(flutterEngine)
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        MobileSyncSDKManager.initNative(getApplicationContext(), SalesforceFlutterActivity.class);
-        super.onCreate(savedInstanceState);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        SalesforceSDKManager.initNative(applicationContext, SalesforceFlutterActivity::class.java)
+        super.onCreate(savedInstanceState)
     }
 }
-
-

@@ -118,7 +118,7 @@ public class SalesforcePlugin implements MethodCallHandler, FlutterPlugin, Activ
 
     @Override
     public void onMethodCall(MethodCall call, final Result result) {
-        String prefix = call.method.substring(0, call.method.indexOf("#"));
+        final String prefix = call.method.substring(0, call.method.indexOf("#"));
         for (SalesforceFlutterBridge bridge : new SalesforceFlutterBridge[]{ this.oauthBridge, this.networkBridge, this.smartStoreFlutterBridge, this.smartSyncFlutterBridge }) {
             if (prefix.equals(bridge.getPrefix())) {
                 bridge.onMethodCall(call, result);
