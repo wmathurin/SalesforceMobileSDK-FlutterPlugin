@@ -58,7 +58,6 @@ import okhttp3.RequestBody;
 public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
 
     private static final String PREFIX = "network";
-    private Handler uiThreadHandler = new Handler(Looper.getMainLooper());
 
     enum Method {
         sendRequest
@@ -116,11 +115,12 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
             restClient.sendAsync(request, new RestClient.AsyncRequestCallback() {
                 @Override
                 public void onSuccess(RestRequest request, final RestResponse response) {
-                    try {
-                        final String resp = response.toString();
-                        currentActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
+                    response.consumeQuietly(); // consume before going back to main thread
+                    currentActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                final String resp = response.toString();
                                 //SalesforceSDKLogger.d(TAG, "response (SalesforceNetFutterBridge): " + resp);
 
                                 // Sending a string over and letting javascript do a JSON.decode(result)
@@ -145,11 +145,11 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
                                 else {
                                     callback.success(resp);
                                 }
+                            } catch (Exception e) {
+                                returnError("sendRequest failed", e, callback);
                             }
-                        });
-                    } catch (Exception e) {
-                        returnError("sendRequest failed", e, callback);
-                    }
+                        }
+                    });
                 }
                 @Override
                 public void onError(final Exception exception) {

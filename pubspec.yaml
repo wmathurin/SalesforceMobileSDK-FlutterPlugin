@@ -1,7 +1,6 @@
 name: salesforce
 description: Salesforce Plugin
 version: 0.0.1
-author:
 homepage:
 
 environment:
