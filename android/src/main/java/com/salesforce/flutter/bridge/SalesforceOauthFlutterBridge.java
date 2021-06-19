@@ -38,7 +38,7 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
 
     public static final String PREFIX = "oauth";
 
-    enum Method {
+    private enum Method {
         getAuthCredentials,
         getClientInfo,
         logoutCurrentUser

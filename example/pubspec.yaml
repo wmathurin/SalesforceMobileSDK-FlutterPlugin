@@ -1,5 +1,5 @@
-name: sfplugin_example
-description: Demonstrates how to use the sfplugin plugin.
+name: salesforce_example
+description: Demonstrates how to use the salesforce plugin.
 
 environment:
   sdk: '>=2.12.0 <3.0.0'

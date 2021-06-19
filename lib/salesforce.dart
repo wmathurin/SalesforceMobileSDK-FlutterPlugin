@@ -5,9 +5,7 @@ import 'package:flutter/services.dart';
 class SalesforcePlugin {
 
   factory SalesforcePlugin() {
-    if (_singleton == null) {
-      _singleton = SalesforcePlugin._(const MethodChannel('com.salesforce.flutter.SalesforcePlugin'));
-    }
+    _singleton ??= SalesforcePlugin._(const MethodChannel('com.salesforce.flutter.SalesforcePlugin'));
     return _singleton!;
   }
 
@@ -21,7 +19,7 @@ class SalesforcePlugin {
   static SalesforcePlugin get instance => _instance;
 
   final MethodChannel _channel;
-  static String _apiVersion = 'v51.0';
+  static String _apiVersion = 'v52.0';
 
   /*
    * Set apiVersion to be used

@@ -28,15 +28,11 @@ package com.salesforce.flutter.ui;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.widget.Toast;
 
-import com.salesforce.androidsdk.app.SalesforceSDKManager;
-import com.salesforce.androidsdk.mobilesync.util.MobileSyncLogger;
-import com.salesforce.androidsdk.rest.ClientManager;
-import com.salesforce.androidsdk.rest.ClientManager.RestClientCallback;
 import com.salesforce.androidsdk.rest.RestClient;
 import com.salesforce.androidsdk.ui.SalesforceActivityDelegate;
 import com.salesforce.androidsdk.ui.SalesforceActivityInterface;
+import com.salesforce.androidsdk.util.SalesforceSDKLogger;
 
 import io.flutter.embedding.android.FlutterActivity;
 
@@ -45,14 +41,13 @@ import io.flutter.embedding.android.FlutterActivity;
  */
 public abstract class SalesforceFlutterActivity extends FlutterActivity implements SalesforceActivityInterface {
 
-    private static final String TAG = "SfFlutterActivity";
+    private static final String TAG = "SalesforceFlutterActivity";
 
     // Delegate
     private final SalesforceActivityDelegate delegate;
 
     // Rest client
     private RestClient client;
-    private ClientManager clientManager;
 
     protected SalesforceFlutterActivity() {
         super();
@@ -61,43 +56,21 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        MobileSyncLogger.i(TAG, "onCreate called");
+        SalesforceSDKLogger.i(TAG, "onCreate called");
         super.onCreate(savedInstanceState);
-
-        // Get clientManager
-        clientManager = buildClientManager();
-
-        // Delegate create
         delegate.onCreate();
     }
 
     @Override
     public void onResume() {
+        SalesforceSDKLogger.i(TAG, "onResume called");
         super.onResume();
-        delegate.onResume(false);
-        // will call this.onResume(RestClient client) with a null client
+        delegate.onResume(true);
     }
 
     @Override
-    public void onResume(RestClient c) {
-        // Called from delegate with null
-
-        // Get client (if already logged in)
-        try {
-            client = clientManager.peekRestClient();
-        } catch (ClientManager.AccountInfoNotFoundException e) {
-            client = null;
-        }
-
-        // Not logged in
-        if (client == null) {
-            onResumeNotLoggedIn();
-        }
-
-        // Logged in
-        else {
-            // Done
-        }
+    public void onResume(RestClient restClient) {
+        this.client = restClient;
     }
 
     @Override
@@ -107,12 +80,14 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
 
     @Override
     public void onPause() {
+        SalesforceSDKLogger.i(TAG, "onPause called");
         super.onPause();
         delegate.onPause();
     }
 
     @Override
     public void onDestroy() {
+        SalesforceSDKLogger.i(TAG, "onDestroy called");
         delegate.onDestroy();
         super.onDestroy();
     }
@@ -123,89 +98,14 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
     }
 
     @Override
-    public void onLogoutComplete() {
-    }
+    public void onLogoutComplete() { }
 
     @Override
     public void onUserSwitched() {
         delegate.onResume(true);
     }
 
-    /**
-     * @return true if you want login to happen as soon as activity is loaded
-     *         false if you want do login at a later point
-     */
-    public boolean shouldAuthenticate() {
-        return true;
-    }
-
-    /**
-     * Called if shouldAuthenticate() returned true but device is offline
-     */
-    public void onErrorAuthenticateOffline() {
-        Toast t = Toast.makeText(this, "Should authenticate but is offline" /* XXX move to resource*/, Toast.LENGTH_LONG);
-        t.show();
-    }
-
-    /**
-     * Called when resuming activity and user is not authenticated
-     */
-    private void onResumeNotLoggedIn() {
-
-        // Need to be authenticated
-        if (shouldAuthenticate()) {
-
-            // Online
-            if (SalesforceSDKManager.getInstance().hasNetwork()) {
-                MobileSyncLogger.i(TAG, "onResumeNotLoggedIn - should authenticate/online - authenticating");
-                login();
-            }
-
-            // Offline
-            else {
-                MobileSyncLogger.w(TAG, "onResumeNotLoggedIn - should authenticate/offline - can not proceed");
-                onErrorAuthenticateOffline();
-            }
-        }
-
-        // Does not need to be authenticated
-        else {
-            MobileSyncLogger.i(TAG, "onResumeNotLoggedIn - should not authenticate");
-        }
-    }
-
-    protected void login() {
-        MobileSyncLogger.i(TAG, "login called");
-        clientManager.getRestClient(this, new RestClientCallback() {
-            @Override
-            public void authenticatedRestClient(RestClient client) {
-                if (client == null) {
-                    MobileSyncLogger.i(TAG, "login callback triggered with null client");
-                    logout();
-                } else {
-                    MobileSyncLogger.i(TAG, "login callback triggered with actual client");
-                    recreate();
-                }
-            }
-        });
-    }
-
     public RestClient getRestClient() {
-        return client;
-    }
-
-    protected void setRestClient(RestClient restClient) {
-        client = restClient;
-    }
-
-    protected ClientManager buildClientManager() {
-        return new ClientManager(this, SalesforceSDKManager.getInstance().getAccountType(),
-                SalesforceSDKManager.getInstance().getLoginOptions(),
-                SalesforceSDKManager.getInstance().shouldLogoutWhenTokenRevoked());
-    }
-
-    public void logout() {
-        MobileSyncLogger.i(TAG, "logout called");
-        SalesforceSDKManager.getInstance().logout(this);
+        return this.client;
     }
 }

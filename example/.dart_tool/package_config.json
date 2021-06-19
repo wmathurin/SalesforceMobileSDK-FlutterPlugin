@@ -140,13 +140,13 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "sfplugin_example",
+      "name": "salesforce_example",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-06-06T19:06:50.734324Z",
+  "generated": "2021-06-19T20:58:00.097223Z",
   "generator": "pub",
-  "generatorVersion": "2.13.1"
+  "generatorVersion": "2.13.3"
 }

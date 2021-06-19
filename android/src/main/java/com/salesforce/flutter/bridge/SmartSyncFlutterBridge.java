@@ -35,7 +35,7 @@ public class SmartSyncFlutterBridge extends SalesforceFlutterBridge {
 
     public static final String PREFIX = "smartsync";
 
-    enum Method {
+    private enum Method {
 
     }
 

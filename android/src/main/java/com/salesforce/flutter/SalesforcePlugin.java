@@ -35,6 +35,8 @@ import com.salesforce.flutter.bridge.SmartStoreFlutterBridge;
 import com.salesforce.flutter.bridge.SmartSyncFlutterBridge;
 import com.salesforce.flutter.ui.SalesforceFlutterActivity;
 
+import org.jetbrains.annotations.NotNull;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -70,8 +72,7 @@ public class SalesforcePlugin implements MethodCallHandler, FlutterPlugin, Activ
         plugin.onAttachedToEngine(registrar.context(), registrar.messenger());
     }
 
-    public SalesforcePlugin() {
-    }
+    public SalesforcePlugin() { }
 
     public SalesforcePlugin(Activity activity) {
         this.setActivity(activity);
@@ -89,7 +90,7 @@ public class SalesforcePlugin implements MethodCallHandler, FlutterPlugin, Activ
     }
 
     @Override
-    public void onDetachedFromEngine(FlutterPluginBinding binding) {
+    public void onDetachedFromEngine(@NotNull FlutterPluginBinding binding) {
         this.context = null;
         this.methodChannel.setMethodCallHandler(null);
         this.methodChannel = null;
@@ -117,7 +118,7 @@ public class SalesforcePlugin implements MethodCallHandler, FlutterPlugin, Activ
     }
 
     @Override
-    public void onMethodCall(MethodCall call, final Result result) {
+    public void onMethodCall(MethodCall call, @NotNull final Result result) {
         final String prefix = call.method.substring(0, call.method.indexOf("#"));
         for (SalesforceFlutterBridge bridge : new SalesforceFlutterBridge[]{ this.oauthBridge, this.networkBridge, this.smartStoreFlutterBridge, this.smartSyncFlutterBridge }) {
             if (prefix.equals(bridge.getPrefix())) {

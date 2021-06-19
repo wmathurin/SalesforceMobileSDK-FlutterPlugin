@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.salesforce.flutter.salesforcepluginexample">
+    package="com.salesforce.flutter.salesforce_example">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH"/>
@@ -8,8 +8,8 @@
         receive the messages and registration result. This must be of
         the format <app-package-name>.C2D_MESSAGE for it to work.
     -->
-    <permission android:name="com.salesforce.flutter.salesforcepluginexample.C2D_MESSAGE" android:protectionLevel="signature" />
-    <uses-permission android:name="com.salesforce.flutter.salesforcepluginexample.C2D_MESSAGE" />
+    <permission android:name="com.salesforce.flutter.salesforce_example.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="com.salesforce.flutter.salesforce_example.C2D_MESSAGE" />
 
     <application
         android:name="io.flutter.app.FlutterApplication"

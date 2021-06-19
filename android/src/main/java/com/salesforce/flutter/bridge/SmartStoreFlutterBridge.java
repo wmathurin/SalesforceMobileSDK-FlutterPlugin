@@ -35,7 +35,7 @@ public class SmartStoreFlutterBridge extends SalesforceNetFlutterBridge {
 
     public static final String PREFIX = "smartstore";
 
-    enum Method {
+    private enum Method {
 
     }
 

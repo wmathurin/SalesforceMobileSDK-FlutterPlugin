@@ -23,8 +23,6 @@
  */
 package com.salesforce.flutter.bridge;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Base64;
 
 import androidx.annotation.NonNull;
@@ -59,7 +57,7 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
 
     private static final String PREFIX = "network";
 
-    enum Method {
+    private enum Method {
         sendRequest
     }
 
@@ -101,15 +99,14 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
     protected void sendRequest(Map<String, Object> args, final MethodChannel.Result callback) {
         try {
             // Getting restClient
-            RestClient restClient = getRestClient();
-
+            final RestClient restClient = getRestClient();
             if (restClient == null) {
                 callback.error("No restClient", null, null);
                 return;
             }
 
             // Prepare request
-            RestRequest request = prepareRestRequest(args);
+            final RestRequest request = prepareRestRequest(args);
             final boolean returnBinary = args.containsKey(RETURN_BINARY) && ((Boolean) args.get(RETURN_BINARY));
 
             restClient.sendAsync(request, new RestClient.AsyncRequestCallback() {
@@ -139,7 +136,6 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
                                     } catch (JSONException | IOException e) {
                                         e.printStackTrace();
                                     }
-
                                 }
                                 // Other cases
                                 else {
