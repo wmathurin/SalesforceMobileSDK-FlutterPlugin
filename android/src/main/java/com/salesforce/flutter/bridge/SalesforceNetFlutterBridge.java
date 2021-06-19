@@ -113,48 +113,40 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
                 @Override
                 public void onSuccess(RestRequest request, final RestResponse response) {
                     response.consumeQuietly(); // consume before going back to main thread
-                    currentActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                final String resp = response.toString();
-                                //SalesforceSDKLogger.d(TAG, "response (SalesforceNetFutterBridge): " + resp);
+                    currentActivity.runOnUiThread(() -> {
+                        try {
+                            final String resp = response.toString();
+                            //SalesforceSDKLogger.d(TAG, "response (SalesforceNetFutterBridge): " + resp);
 
-                                // Sending a string over and letting javascript do a JSON.decode(result)
+                            // Sending a string over and letting javascript do a JSON.decode(result)
 
-                                // Not a 2xx status
-                                if (!response.isSuccess()) {
-                                    callback.error("Got http response " + response.getStatusCode(), resp, null);
-                                }
-                                // Binary response
-                                else if (returnBinary) {
-                                    try {
-                                        JSONObject result = new JSONObject();
-                                        result.put(CONTENT_TYPE, response.getContentType());
-                                        result.put(ENCODED_BODY, Base64.encodeToString(response.asBytes(), Base64.DEFAULT));
-                                        callback.success(result.toString());
-                                    } catch (JSONException | IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                // Other cases
-                                else {
-                                    callback.success(resp);
-                                }
-                            } catch (Exception e) {
-                                returnError("sendRequest failed", e, callback);
+                            // Not a 2xx status
+                            if (!response.isSuccess()) {
+                                callback.error("Got http response " + response.getStatusCode(), resp, null);
                             }
+                            // Binary response
+                            else if (returnBinary) {
+                                try {
+                                    JSONObject result = new JSONObject();
+                                    result.put(CONTENT_TYPE, response.getContentType());
+                                    result.put(ENCODED_BODY, Base64.encodeToString(response.asBytes(), Base64.DEFAULT));
+                                    callback.success(result.toString());
+                                } catch (JSONException | IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            // Other cases
+                            else {
+                                callback.success(resp);
+                            }
+                        } catch (Exception e) {
+                            returnError("sendRequest failed", e, callback);
                         }
                     });
                 }
                 @Override
                 public void onError(final Exception exception) {
-                    currentActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            returnError("sendRequest failed", exception, callback);
-                        }
-                    });
+                    currentActivity.runOnUiThread(() -> returnError("sendRequest failed", exception, callback));
                 }
             });
         } catch (Exception exception) {
