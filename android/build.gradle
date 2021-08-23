@@ -44,10 +44,10 @@ android {
 }
 
 dependencies {
-    implementation 'com.salesforce.mobilesdk:SalesforceSDK:9.0.0'
-    implementation 'com.salesforce.mobilesdk:SalesforceAnalytics:9.0.0'
-    implementation 'com.salesforce.mobilesdk:SmartStore:9.0.0'
-    implementation 'com.salesforce.mobilesdk:MobileSync:9.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.core:core-ktx:1.5.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "com.salesforce.mobilesdk:SalesforceSDK:9.1.1"
+    implementation "com.salesforce.mobilesdk:SalesforceAnalytics:9.1.1"
+    implementation "com.salesforce.mobilesdk:SmartStore:9.1.1"
+    implementation "com.salesforce.mobilesdk:MobileSync:9.1.1"
 }
