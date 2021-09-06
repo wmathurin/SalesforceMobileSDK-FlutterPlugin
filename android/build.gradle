@@ -2,16 +2,13 @@ group 'com.salesforce.flutter'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.5.10'
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:4.2.2'
     }
 }
 
@@ -19,12 +16,10 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 30
@@ -44,8 +39,6 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "androidx.core:core-ktx:1.5.0"
     implementation "com.salesforce.mobilesdk:SalesforceSDK:9.1.1"
     implementation "com.salesforce.mobilesdk:SalesforceAnalytics:9.1.1"
     implementation "com.salesforce.mobilesdk:SmartStore:9.1.1"

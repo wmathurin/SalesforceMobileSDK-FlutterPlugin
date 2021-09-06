@@ -1,6 +1,5 @@
 /*
  Copyright (c) 2018-present, salesforce.com, inc. All rights reserved.
-
  Redistribution and use of this software in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this list of conditions
@@ -11,7 +10,6 @@
  * Neither the name of salesforce.com, inc. nor the names of its contributors may be used to
  endorse or promote products derived from this software without specific prior written
  permission of salesforce.com, inc.
-
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
@@ -22,6 +20,11 @@
  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.salesforce.flutter.bridge;
+
+import static com.salesforce.flutter.ui.SalesforceFlutterActivity.getRestClient;
+import static com.salesforce.flutter.ui.SalesforceFlutterActivity.setRestClient;
+
+import androidx.annotation.NonNull;
 
 import com.salesforce.androidsdk.app.SalesforceSDKManager;
 import com.salesforce.androidsdk.rest.RestClient;
@@ -34,13 +37,14 @@ import io.flutter.plugin.common.MethodChannel;
 /**
  * Flutter bridge for oauth operations
  */
-public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
+public class SalesforceOauthFlutterBridge extends SalesforceFlutterBridge {
 
     public static final String PREFIX = "oauth";
 
     private enum Method {
         getAuthCredentials,
         getClientInfo,
+        authenticate,
         logoutCurrentUser
     }
 
@@ -56,14 +60,17 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
     }
 
     @Override
-    public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-        Method method = Method.valueOf(call.method.substring(PREFIX.length() + 1));
+    public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        final Method method = Method.valueOf(call.method.substring(PREFIX.length() + 1));
         switch(method) {
             case getAuthCredentials:
                 getAuthCredentials(result);
                 break;
             case getClientInfo:
                 getClientInfo(result);
+                break;
+            case authenticate:
+                authenticate(result);
                 break;
             case logoutCurrentUser:
                 logoutCurrentUser(result);
@@ -76,10 +83,9 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
     protected void getAuthCredentials(final MethodChannel.Result callback) {
         try {
             // Getting restClient
-            RestClient restClient = getRestClient();
-
+            final RestClient restClient = getRestClient();
             if (restClient == null) {
-                callback.error("No restClient", null, null);
+                callback.error("No restClient - getAuthCredentials", null, null);
                 return;
             }
 
@@ -93,10 +99,9 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
     protected void getClientInfo(final MethodChannel.Result callback) {
         try {
             // Getting restClient
-            RestClient restClient = getRestClient();
-
+            final RestClient restClient = getRestClient();
             if (restClient == null) {
-                callback.error("No restClient", null, null);
+                callback.error("No restClient - getClientInfo", null, null);
                 return;
             }
 
@@ -107,6 +112,13 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
         }
     }
 
+    protected void authenticate(final MethodChannel.Result callback) {
+        SalesforceSDKManager.getInstance().getClientManager().getRestClient(currentActivity, client -> {
+            setRestClient(client);
+            callback.success("success");
+        });
+    }
+
     protected void logoutCurrentUser(final MethodChannel.Result callback) {
         try {
             SalesforceSDKManager.getInstance().logout(currentActivity);
@@ -114,15 +126,6 @@ public class SalesforceOauthFlutterBridge extends SalesforceNetFlutterBridge {
         } catch (Exception exception) {
             returnError("sendRequest failed", exception, callback);
         }
-    }
-
-    /**
-     * Returns the RestClient instance being used by this bridge.
-     *
-     * @return RestClient instance.
-     */
-    protected RestClient getRestClient() {
-        return currentActivity != null ? currentActivity.getRestClient() : null;
     }
 
     private void returnError(String message, Exception exception, MethodChannel.Result callback) {

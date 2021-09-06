@@ -3,3 +3,6 @@
 Podfile.lock
 mobile_sdk/
 package-lock.json
+/.dart_tool/
+/.gradle/
+/example/.dart_tool/

@@ -242,6 +242,10 @@ class SalesforcePlugin {
     return response;
   }
 
+  static Future<void> authenticate() async {
+    await _platform._channel.invokeMethod('oauth#authenticate');
+  }
+
   static Future<void> logoutCurrentUser() async {
     await _platform._channel.invokeMethod('oauth#logoutCurrentUser');
   }

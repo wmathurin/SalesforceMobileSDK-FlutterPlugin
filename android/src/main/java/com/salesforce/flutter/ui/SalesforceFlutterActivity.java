@@ -27,6 +27,7 @@
 package com.salesforce.flutter.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ import com.salesforce.androidsdk.rest.RestClient;
 import com.salesforce.androidsdk.ui.SalesforceActivityDelegate;
 import com.salesforce.androidsdk.ui.SalesforceActivityInterface;
 import com.salesforce.androidsdk.util.SalesforceSDKLogger;
+import com.salesforce.flutter.R;
 
 import io.flutter.embedding.android.FlutterActivity;
 
@@ -45,13 +47,13 @@ import io.flutter.embedding.android.FlutterActivity;
  */
 public abstract class SalesforceFlutterActivity extends FlutterActivity implements SalesforceActivityInterface {
 
-    private static final String TAG = "SfFlutterActivity";
+    private static final String TAG = "SalesforceFlutterActivity";
 
     // Delegate
     private final SalesforceActivityDelegate delegate;
 
     // Rest client
-    private RestClient client;
+    private static RestClient restClient;
     private ClientManager clientManager;
 
     protected SalesforceFlutterActivity() {
@@ -61,57 +63,63 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SalesforceSDKLogger.i(TAG, "onCreate called");
+        Log.i(TAG,"onCreate");
         super.onCreate(savedInstanceState);
-        // Get clientManager
+        this.delegate.onCreate();
         this.clientManager = buildClientManager();
 
-        // Delegate create
-        this.delegate.onCreate();
+        boolean isDarkTheme = SalesforceSDKManager.getInstance().isDarkTheme();
+        setTheme(isDarkTheme ? R.style.SalesforceSDK_Dark : R.style.SalesforceSDK);
+        // This makes the navigation bar visible on light themes.
+        SalesforceSDKManager.getInstance().setViewNavigationVisibility(this);
     }
 
     @Override
     public void onResume() {
+        Log.i(TAG,"onResume");
         super.onResume();
-        this.delegate.onResume(false);
-        // will call this.onResume(RestClient client) with a null client
+        this.delegate.onResume(true);
     }
 
     @Override
-    public void onResume(RestClient c) {
-        // Called from delegate with null
+    public void onResume(RestClient client) {
+        Log.i(TAG,"onResume - restClient");
+
+        if (client != null){
+            restClient = client;
+        }
 
         // Get client (if already logged in)
-        try {
-            this.client = clientManager.peekRestClient();
-        } catch (ClientManager.AccountInfoNotFoundException e) {
-            this.client = null;
+        if (restClient == null) {
+            try {
+                restClient = this.clientManager.peekRestClient();
+            } catch (ClientManager.AccountInfoNotFoundException e) {
+                restClient = null;
+            }
         }
 
         // Not logged in
-        if (this.client == null) {
+        if (restClient == null) {
             onResumeNotLoggedIn();
-        }
-
-        // Logged in
-        else {
-            // Done
         }
     }
 
     @Override
     public void onUserInteraction() {
+        Log.i(TAG,"onUserInteraction");
         this.delegate.onUserInteraction();
     }
 
     @Override
     public void onPause() {
+        Log.i(TAG,"onPause");
         super.onPause();
         this.delegate.onPause();
     }
 
     @Override
     public void onDestroy() {
+        Log.i(TAG,"onDestroy");
         this.delegate.onDestroy();
         super.onDestroy();
     }
@@ -122,8 +130,7 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
     }
 
     @Override
-    public void onLogoutComplete() {
-    }
+    public void onLogoutComplete() { }
 
     @Override
     public void onUserSwitched() {
@@ -152,32 +159,31 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
     private void onResumeNotLoggedIn() {
         // Need to be authenticated
         if (shouldAuthenticate()) {
-
             // Online
             if (SalesforceSDKManager.getInstance().hasNetwork()) {
-                SalesforceSDKLogger.i(TAG, "onResumeNotLoggedIn - should authenticate/online - authenticating");
+                Log.i(TAG, "onResumeNotLoggedIn - should authenticate/online - authenticating");
                 login();
             }
 
             // Offline
             else {
-                SalesforceSDKLogger.w(TAG, "onResumeNotLoggedIn - should authenticate/offline - can not proceed");
+                Log.w(TAG, "onResumeNotLoggedIn - should authenticate/offline - can not proceed");
                 onErrorAuthenticateOffline();
             }
         }
 
         // Does not need to be authenticated
         else {
-            MobileSyncLogger.i(TAG, "onResumeNotLoggedIn - should not authenticate");
+            Log.i(TAG, "onResumeNotLoggedIn - should not authenticate");
         }
     }
 
-    public RestClient getRestClient() {
-        return this.client;
+    public static RestClient getRestClient() {
+        return SalesforceFlutterActivity.restClient;
     }
 
-    protected void setRestClient(RestClient restClient) {
-        this.client = restClient;
+    public static void setRestClient(RestClient restClient) {
+        SalesforceFlutterActivity.restClient = restClient;
     }
 
     protected ClientManager buildClientManager() {
@@ -187,20 +193,14 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
     }
 
     protected void login() {
-        SalesforceSDKLogger.i(TAG, "login called");
-        this.clientManager.getRestClient(this, client -> {
-            if (client == null) {
-                MobileSyncLogger.i(TAG, "login callback triggered with null client");
-                logout();
-            } else {
-                MobileSyncLogger.i(TAG, "login callback triggered with actual client");
-                recreate();
-            }
+        Log.i(TAG, "login called");
+        SalesforceSDKManager.getInstance().getClientManager().getRestClient(this, client -> {
+            restClient = client;
         });
     }
 
     public void logout() {
-        SalesforceSDKLogger.i(TAG, "logout called");
+        Log.i(TAG, "logout called");
         SalesforceSDKManager.getInstance().logout(this, true);
     }
 }

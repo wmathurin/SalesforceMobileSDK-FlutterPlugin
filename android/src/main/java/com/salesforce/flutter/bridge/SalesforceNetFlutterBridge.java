@@ -1,6 +1,5 @@
 /*
  Copyright (c) 2018-present, salesforce.com, inc. All rights reserved.
-
  Redistribution and use of this software in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this list of conditions
@@ -11,7 +10,6 @@
  * Neither the name of salesforce.com, inc. nor the names of its contributors may be used to
  endorse or promote products derived from this software without specific prior written
  permission of salesforce.com, inc.
-
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
@@ -22,6 +20,8 @@
  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.salesforce.flutter.bridge;
+
+import static com.salesforce.flutter.ui.SalesforceFlutterActivity.getRestClient;
 
 import android.util.Base64;
 
@@ -61,6 +61,8 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
         sendRequest
     }
 
+    private static final String TAG = "SalesforceNetFlutterBridge";
+
     private static final String METHOD_KEY = "method";
     private static final String END_POINT_KEY = "endPoint";
     private static final String PATH_KEY = "path";
@@ -73,7 +75,6 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
     private static final String RETURN_BINARY = "returnBinary";
     private static final String ENCODED_BODY = "encodedBody";
     private static final String CONTENT_TYPE = "contentType";
-    private static final String TAG = "SalesforceNetFlutterBridge";
 
     public SalesforceNetFlutterBridge(SalesforceFlutterActivity currentActivity) {
         super(currentActivity);
@@ -85,11 +86,11 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
     }
 
     @Override
-    public void onMethodCall(MethodCall call, MethodChannel.Result result) {
+    public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         Method method = Method.valueOf(call.method.substring(PREFIX.length() + 1));
         switch(method) {
             case sendRequest:
-                sendRequest((Map<String, Object>) call.arguments, result); 
+                sendRequest((Map<String, Object>) call.arguments, result);
                 break;
             default:
                 result.notImplemented();
@@ -101,7 +102,7 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
             // Getting restClient
             final RestClient restClient = getRestClient();
             if (restClient == null) {
-                callback.error("No restClient", null, null);
+                callback.error("No restClient - sendRequest", null, null);
                 return;
             }
 
@@ -115,14 +116,13 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
                     response.consumeQuietly(); // consume before going back to main thread
                     currentActivity.runOnUiThread(() -> {
                         try {
-                            final String resp = response.toString();
                             //SalesforceSDKLogger.d(TAG, "response (SalesforceNetFutterBridge): " + resp);
 
                             // Sending a string over and letting javascript do a JSON.decode(result)
 
                             // Not a 2xx status
                             if (!response.isSuccess()) {
-                                callback.error("Got http response " + response.getStatusCode(), resp, null);
+                                callback.error("Got http response " + response.getStatusCode(), response.toString(), null);
                             }
                             // Binary response
                             else if (returnBinary) {
@@ -137,7 +137,7 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
                             }
                             // Other cases
                             else {
-                                callback.success(resp);
+                                callback.success(response.toString());
                             }
                         } catch (Exception e) {
                             returnError("sendRequest failed", e, callback);
@@ -184,15 +184,6 @@ public class SalesforceNetFlutterBridge extends SalesforceFlutterBridge {
                 : "?";
 
         return new RestRequest(method, endPoint + path + separator + urlParams, requestBody, additionalHeaders);
-    }
-
-    /**
-     * Returns the RestClient instance being used by this bridge.
-     *
-     * @return RestClient instance.
-     */
-    protected RestClient getRestClient() {
-        return currentActivity != null ? currentActivity.getRestClient() : null;
     }
 
     private static String buildQueryString(Map<String, Object> params) throws UnsupportedEncodingException {
