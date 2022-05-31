@@ -104,11 +104,11 @@ public abstract class SalesforceFlutterActivity extends FlutterActivity implemen
         }
     }
 
-    @Override
+    /*@Override
     public void onUserInteraction() {
         Log.i(TAG,"onUserInteraction");
         this.delegate.onUserInteraction();
-    }
+    }*/
 
     @Override
     public void onPause() {
