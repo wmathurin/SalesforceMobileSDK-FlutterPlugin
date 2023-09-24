@@ -64,7 +64,7 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.core:core-ktx:1.7.0"
-    implementation "com.salesforce.mobilesdk:SalesforceSDK:10.0.0"
+    implementation "com.salesforce.mobilesdk:SalesforceSDK:11.0.1"
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation "com.android.support.test:runner:1.0.2"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.2"

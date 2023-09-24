@@ -35,8 +35,8 @@ android {
 }
 
 dependencies {
-    implementation "com.salesforce.mobilesdk:SalesforceSDK:10.2.0"
-    implementation "com.salesforce.mobilesdk:SalesforceAnalytics:10.2.0"
-    implementation "com.salesforce.mobilesdk:SmartStore:10.2.0"
-    implementation "com.salesforce.mobilesdk:MobileSync:10.2.0"
+    implementation "com.salesforce.mobilesdk:SalesforceSDK:11.0.1"
+    implementation "com.salesforce.mobilesdk:SalesforceAnalytics:11.0.1"
+    implementation "com.salesforce.mobilesdk:SmartStore:11.0.1"
+    implementation "com.salesforce.mobilesdk:MobileSync:11.0.1"
 }
