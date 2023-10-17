@@ -1,0 +1,42 @@
+group 'com.salesforce.flutter'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.4.2'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 33
+
+    defaultConfig {
+        minSdkVersion 24
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+        checkReleaseBuilds false
+    }
+}
+
+dependencies {
+    implementation "com.salesforce.mobilesdk:SalesforceSDK:11.0.1"
+    implementation "com.salesforce.mobilesdk:SalesforceAnalytics:11.0.1"
+    implementation "com.salesforce.mobilesdk:SmartStore:11.0.1"
+    implementation "com.salesforce.mobilesdk:MobileSync:11.0.1"
+}
